@@ -46,7 +46,7 @@ cat << EOF > "$HOME/.local/share/applications/io.github.pixlone.logioptions.gtk.
 Name=Logi Options+
 Comment=Logitech Options+ oficial para Linux (MX Master 3S)
 Exec=$APP_DIR/launch.sh
-Icon=$ASSETS_DIR/logi-options-plus-512.png
+Icon=io.github.pixlone.logioptions.gtk
 Terminal=false
 Type=Application
 Categories=Settings;HardwareSettings;Utility;GTK;

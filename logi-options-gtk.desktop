@@ -1,12 +1,10 @@
 [Desktop Entry]
 Name=Logi Options+
-Comment=Logitech MX Master 3S Configuration for Linux
-GenericName=Mouse Configuration
-Exec=/home/gutopardini/.local/bin/logi-options
-Icon=/home/gutopardini/Documents/logi-options-gtk/app/assets/logi-options-plus-512.png
+Comment=Logitech Options+ oficial para Linux (MX Master 3S)
+Exec=/home/gutopardini/Git/personal/logi-options-gtk/launch.sh
+Icon=io.github.pixlone.logioptions.gtk
 Terminal=false
 Type=Application
-Categories=Utility;Settings;
-StartupNotify=true
+Categories=Settings;HardwareSettings;Utility;GTK;
 StartupWMClass=io.github.pixlone.logioptions.gtk
-Keywords=logitech;mouse;mx master;options;dpi;gestures;smartshift;
+Keywords=logitech;options;mouse;mx;master;3s;bluetooth;settings;
