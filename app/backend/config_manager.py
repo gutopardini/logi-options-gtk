@@ -252,7 +252,8 @@ class LogidConfig:
         (
           {{
             direction: "Up";
-            mode: "OnRelease";
+            mode: "OnThreshold";
+            threshold: 30;
             action =
             {{
               type: "Keypress";
@@ -261,7 +262,8 @@ class LogidConfig:
           }},
           {{
             direction: "Down";
-            mode: "OnRelease";
+            mode: "OnThreshold";
+            threshold: 30;
             action =
             {{
               type: "Keypress";
@@ -270,7 +272,8 @@ class LogidConfig:
           }},
           {{
             direction: "Left";
-            mode: "OnRelease";
+            mode: "OnThreshold";
+            threshold: 30;
             action =
             {{
               type: "Keypress";
@@ -279,11 +282,21 @@ class LogidConfig:
           }},
           {{
             direction: "Right";
-            mode: "OnRelease";
+            mode: "OnThreshold";
+            threshold: 30;
             action =
             {{
               type: "Keypress";
               keys: [{format_keys(self.gesture_right_keys)}];
+            }};
+          }},
+          {{
+            direction: "None";
+            mode: "OnRelease";
+            action =
+            {{
+              type: "Keypress";
+              keys: [{format_keys(self.gesture_single_keys)}];
             }};
           }}
         );
