@@ -120,18 +120,59 @@ logi-options-gtk/
         └── add_app_dialog.py   # Modal de seleção de softwares instalados
 ```
 
+## ⚙️ Dependência Obrigatória do Backend / Backend Dependency
+
+Este aplicativo é a **interface gráfica (GUI Frontend)** que gerencia a calibração, atalhos e ações do mouse de forma visual e intuitiva. 
+
+A comunicação com o hardware e a interceptação de eventos no nível do kernel Linux é executada pelo daemon open-source **[`logiops` (`logid`)](https://github.com/PixlOne/logiops)** desenvolvido por PixlOne.
+
+> [!IMPORTANT]
+> O serviço **`logid`** deve estar instalado e ativo no sistema para que os gestos, SmartShift e atalhos funcionem.
+
 ---
 
-## 🚀 Instalação e Execução / Installation
+### 📦 Como Instalar o `logiops` na sua Distribuição:
 
-### 1. Pré-requisitos (Fedora / RHEL / Ubuntu / Debian / Arch):
+#### 🔹 Fedora / RHEL / CentOS:
+```bash
+sudo dnf copr enable -y ruben/logiops
+sudo dnf install -y logiops
+sudo systemctl enable --now logid
+```
+
+#### 🔹 Arch Linux / Manjaro:
+```bash
+yay -S logiops-git
+sudo systemctl enable --now logid
+```
+
+#### 🔹 Ubuntu / Debian / Pop!_OS:
+```bash
+sudo apt update
+sudo apt install -y build-essential cmake pkg-config libevdev-dev libudev-dev libconfig++-dev
+git clone https://github.com/PixlOne/logiops.git
+cd logiops && mkdir build && cd build
+cmake .. && make
+sudo make install
+sudo systemctl enable --now logid
+```
+
+---
+
+## 🚀 Instalação e Execução do Logi Options+ (GUI)
+
+### 1. Dependências da Interface (GTK4 + Libadwaita):
 * **Python 3.10+**
 * **GTK4 & Libadwaita** (`python3-gobject`, `gtk4`, `libadwaita`)
-* **logiops / logid** instalado e habilitado (`systemctl enable --now logid`)
 
 No Fedora:
 ```bash
-sudo dnf install -y python3 python3-gobject gtk4 libadwaita logiops
+sudo dnf install -y python3 python3-gobject gtk4 libadwaita
+```
+
+No Ubuntu / Debian:
+```bash
+sudo apt install -y python3 python3-gi python3-gi-cairo gir1.2-gtk-4.0 gir1.2-adw-1
 ```
 
 ---
