@@ -1,0 +1,445 @@
+/* ==========================================================================
+   Logi Options+ Official Exact 1:1 Dark Theme (GTK4 / Libadwaita)
+   Baseado fielmente nas capturas de tela do software oficial da Logitech
+   ========================================================================== */
+
+:root {
+  --logi-cyan: #00e5c9;
+  --logi-cyan-hover: #1affdf;
+  --logi-cyan-active: #00cca8;
+  --logi-cyan-glow: rgba(0, 229, 201, 0.40);
+  
+  --logi-bg: #0e0f12;
+  --logi-sidebar-bg: #0e0f12;
+  --logi-drawer-bg: #0e0f12;
+  --logi-card-bg: #14161c;
+  --logi-card-hover: #1a1c24;
+  --logi-input-bg: #16181f;
+  
+  --logi-border: #20242e;
+  --logi-border-subtle: #181a22;
+  
+  --logi-text-white: #ffffff;
+  --logi-text-dim: #8b92a0;
+  --logi-text-dark: #0a0c10;
+}
+
+window {
+  background-color: var(--logi-bg);
+  color: var(--logi-text-white);
+}
+
+/* --------------------------------------------------------------------------
+   1. HeaderBar Oficial (← MX Master 3S  |  ⊞  + ADD APPLICATION)
+   -------------------------------------------------------------------------- */
+.logi-header-official {
+  background: var(--logi-bg);
+  padding: 16px 24px;
+}
+
+.device-title {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--logi-text-white);
+  letter-spacing: -0.3px;
+}
+
+.global-app-btn {
+  background: transparent;
+  color: var(--logi-cyan);
+  border: none;
+  font-size: 1.2rem;
+  padding: 6px 12px;
+  border-bottom: 2px solid var(--logi-cyan);
+  border-radius: 0;
+}
+
+.add-app-btn {
+  background: transparent;
+  color: var(--logi-text-white);
+  font-weight: 700;
+  font-size: 0.84rem;
+  letter-spacing: 0.5px;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  transition: all 150ms ease;
+}
+
+.add-app-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.back-nav-btn {
+  background: transparent;
+  color: var(--logi-text-white);
+  border: none;
+  font-size: 1.35rem;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 150ms ease;
+}
+
+.back-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--logi-cyan);
+}
+
+.close-nav-btn {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--logi-text-dim);
+  border: 1px solid var(--logi-border);
+  font-weight: 700;
+  font-size: 0.84rem;
+  padding: 6px 14px;
+  border-radius: 6px;
+  transition: all 150ms ease;
+}
+
+.close-nav-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+/* --------------------------------------------------------------------------
+   2. Barra Lateral Esquerda Oficial (Left Sidebar)
+   -------------------------------------------------------------------------- */
+.sidebar-container {
+  background: var(--logi-sidebar-bg);
+  padding: 24px 18px;
+  border-right: 1px solid #161820;
+}
+
+.sidebar-tab-btn {
+  background: transparent;
+  color: var(--logi-text-white);
+  border-radius: 6px;
+  padding: 11px 16px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  border: none;
+  transition: all 160ms ease;
+}
+
+.sidebar-tab-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Tab Ativa: Pílula Ciano Oficial */
+.sidebar-tab-btn.active {
+  background: var(--logi-cyan);
+  color: var(--logi-text-dark);
+  font-weight: 800;
+  box-shadow: 0 4px 16px var(--logi-cyan-glow);
+}
+
+/* Badge de Bateria Oficial (40% 🔋 ⚡) */
+.official-battery-badge {
+  background: #12141a;
+  border: 1px solid #222632;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: var(--logi-cyan);
+}
+
+/* --------------------------------------------------------------------------
+   3. Callout Badges sobre o Mouse (Screenshots 0, 1, 2, 7)
+   -------------------------------------------------------------------------- */
+.callout-badge {
+  background: rgba(18, 20, 26, 0.94);
+  border: 1px solid #282c38;
+  border-radius: 6px;
+  padding: 8px 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+  transition: all 160ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.callout-badge:hover {
+  border-color: var(--logi-cyan);
+  transform: translateY(-2px);
+  box-shadow: 0 0 16px var(--logi-cyan-glow);
+}
+
+.callout-title {
+  font-weight: 700;
+  font-size: 0.86rem;
+  color: var(--logi-text-white);
+}
+
+.callout-sub {
+  font-size: 0.74rem;
+  color: var(--logi-text-dim);
+}
+
+/* Callout Ativo: Fundo Ciano Sólido com Texto Preto (Screenshots 1, 7, 8, 9) */
+.callout-badge.active {
+  background: var(--logi-cyan);
+  border-color: #ffffff;
+  box-shadow: 0 0 24px var(--logi-cyan-glow);
+}
+
+.callout-badge.active .callout-title {
+  color: var(--logi-text-dark);
+  font-weight: 800;
+}
+
+.callout-badge.active .callout-sub {
+  color: #102420;
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   4. Actions Drawer (Lado Direito - Screenshots 1, 2, 7, 8, 9)
+   -------------------------------------------------------------------------- */
+.actions-drawer-container {
+  background: var(--logi-drawer-bg);
+  border-left: 1px solid #1c202a;
+  padding: 24px 22px;
+  min-width: 380px;
+  max-width: 420px;
+}
+
+.drawer-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--logi-text-white);
+  margin-bottom: 16px;
+}
+
+/* Campo de Busca Oficial */
+.official-search-entry {
+  background: var(--logi-input-bg);
+  color: var(--logi-text-white);
+  border: 1px solid var(--logi-border);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+}
+
+.official-search-entry:focus-within {
+  border-color: var(--logi-cyan);
+  box-shadow: 0 0 12px var(--logi-cyan-glow);
+}
+
+/* Cabeçalho de Categoria (RECOMMENDED, APP SPECIFIC, etc.) */
+.category-header-label {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--logi-text-dim);
+  letter-spacing: 0.8px;
+  margin-top: 18px;
+  margin-bottom: 8px;
+}
+
+/* Accordion Colapsável Oficial de OTHER ACTIONS (Screenshot Oficial) */
+.accordion-header-btn {
+  background: transparent;
+  border-top: 1px solid #1e222d;
+  border-bottom: none;
+  border-left: none;
+  border-right: none;
+  border-radius: 0px;
+  padding: 14px 4px 10px 4px;
+  margin-top: 14px;
+  margin-bottom: 6px;
+  transition: all 140ms ease;
+}
+
+.accordion-header-btn:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.accordion-header-title {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--logi-text-dim);
+  letter-spacing: 0.8px;
+}
+
+.accordion-chevron {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--logi-text-dim);
+}
+
+/* Linha de Ação Não Selecionada */
+.action-radio-row {
+  background: transparent;
+  color: var(--logi-text-white);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+  transition: all 140ms ease;
+}
+
+.action-radio-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Linha de Ação SELECIONADA: Pílula Ciano Sólida (Screenshots 7, 8, 9) */
+.action-radio-row.selected {
+  background: var(--logi-cyan);
+  color: var(--logi-text-dark);
+  font-weight: 800;
+  box-shadow: 0 4px 14px var(--logi-cyan-glow);
+}
+
+.action-radio-row.selected label {
+  color: var(--logi-text-dark);
+  font-weight: 800;
+}
+
+/* --------------------------------------------------------------------------
+   5. Card de Configuração de Gestos (Screenshots 1 e 6)
+   -------------------------------------------------------------------------- */
+.gestures-config-box {
+  background: #11141c;
+  border: 1px solid #222836;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 8px;
+  margin-bottom: 14px;
+}
+
+.gesture-subrow {
+  border-bottom: 1px solid #1c2230;
+  padding: 10px 6px;
+}
+
+.gesture-subrow:last-child {
+  border-bottom: none;
+}
+
+.gesture-arrow-text {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--logi-text-dim);
+  letter-spacing: 0.5px;
+}
+
+.gesture-action-text {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--logi-text-white);
+}
+
+/* --------------------------------------------------------------------------
+   6. Caixa de Gravação de Teclas Oficial (Screenshot Oficial)
+   -------------------------------------------------------------------------- */
+.shortcut-config-box {
+  background: #11141c;
+  border: 1px solid #222836;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 8px;
+  margin-bottom: 14px;
+}
+
+.key-recorder-box {
+  background: #0b0d12;
+  border: 1.5px solid #242936;
+  color: var(--logi-text-white);
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  transition: all 140ms ease;
+}
+
+.key-recorder-box:hover {
+  background: #12151d;
+  border-color: #3b4254;
+}
+
+.key-recorder-box.recording-active {
+  border-color: var(--logi-cyan);
+  box-shadow: 0 0 16px var(--logi-cyan-glow);
+  background: #0e161c;
+}
+
+.key-recorder-box.recording-active label {
+  color: var(--logi-cyan);
+  font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   7. Estilos Easy-Switch Oficiais (Screenshot Oficial)
+   -------------------------------------------------------------------------- */
+.easy-switch-badge-active {
+  background: var(--logi-cyan);
+  border-radius: 9999px;
+  min-width: 36px;
+  min-height: 36px;
+}
+
+.easy-switch-num-active {
+  color: #0b0d12;
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+
+.easy-switch-badge-paired {
+  background: transparent;
+  border: 1.8px solid #ffffff;
+  border-radius: 9999px;
+  min-width: 36px;
+  min-height: 36px;
+}
+
+.easy-switch-num-paired {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.easy-switch-badge-dim {
+  background: transparent;
+  border: 1.8px solid #3b4254;
+  border-radius: 9999px;
+  min-width: 36px;
+  min-height: 36px;
+}
+
+.easy-switch-num-dim {
+  color: #5c6479;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.action-title-white {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.device-separator {
+  background: #1c2230;
+  margin: 4px 0;
+}
+
+/* --------------------------------------------------------------------------
+   8. Botão Aplicar Oficial
+   -------------------------------------------------------------------------- */
+.official-apply-btn {
+  background: var(--logi-cyan);
+  color: var(--logi-text-dark);
+  font-weight: 800;
+  font-size: 0.88rem;
+  border-radius: 6px;
+  padding: 8px 22px;
+  border: none;
+  box-shadow: 0 4px 16px var(--logi-cyan-glow);
+  transition: all 180ms ease;
+}
+
+.official-apply-btn:hover {
+  background: var(--logi-cyan-hover);
+  box-shadow: 0 6px 24px rgba(0, 229, 201, 0.6);
+}
