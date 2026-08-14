@@ -47,7 +47,7 @@ UNIFIED_OTHER_ACTIONS = [
     {"name": "Right Ctrl", "keys": ["KEY_RIGHTCTRL"], "type": "action"},
     {"name": "Screen capture", "keys": ["KEY_LEFTMETA", "KEY_LEFTSHIFT", "KEY_S"], "type": "action"},
     {"name": "Screen snip", "keys": ["KEY_PRINT"], "type": "action"},
-    {"name": "Shift wheel mode", "keys": [], "type": "action"},
+    {"name": "Shift wheel mode", "keys": [], "type": "toggle_smartshift"},
     {"name": "Show/hide desktop", "keys": ["KEY_LEFTMETA", "KEY_D"], "type": "action"},
     {"name": "Switch application", "keys": ["KEY_LEFTALT", "KEY_TAB"], "type": "action"},
     {"name": "Task view", "keys": ["KEY_LEFTMETA"], "type": "action"},
@@ -284,8 +284,8 @@ class ButtonsView(Gtk.Box):
             ]
         elif self.current_pin == "btn_middle":
             recommended_items = [
-                {"name": "Middle button", "keys": [], "type": "action"},
-                {"name": "Shift wheel mode", "keys": ["KEY_NONE"], "type": "action"},
+                {"name": "Middle button", "keys": [], "type": "middle_default"},
+                {"name": "Shift wheel mode", "keys": [], "type": "toggle_smartshift"},
                 {"name": "Task view", "keys": ["KEY_LEFTMETA"], "type": "action"},
                 {"name": "Show/hide desktop", "keys": ["KEY_LEFTMETA", "KEY_D"], "type": "action"},
                 {"name": "Gestures", "keys": None, "type": "gestures"},
@@ -293,7 +293,7 @@ class ButtonsView(Gtk.Box):
             ]
         elif self.current_pin == "btn_top":
             recommended_items = [
-                {"name": "Shift wheel mode", "keys": [], "type": "action"},
+                {"name": "Shift wheel mode", "keys": [], "type": "toggle_smartshift"},
                 {"name": "Task view", "keys": ["KEY_LEFTMETA"], "type": "action"},
                 {"name": "Middle button", "keys": ["BTN_MIDDLE"], "type": "action"},
                 {"name": "Gestures", "keys": None, "type": "gestures"},
@@ -372,7 +372,15 @@ class ButtonsView(Gtk.Box):
         itype = item.get("type")
 
         # Verifica seleção
-        if itype == "thumb_shortcut" and self.current_pin == "thumbwheel":
+        if itype == "toggle_smartshift":
+            if self.current_pin == "btn_top" and self.config.btn_top_action == "ToggleSmartShift":
+                is_selected = True
+            elif self.current_pin == "btn_middle" and self.config.btn_middle_action == "ToggleSmartShift":
+                is_selected = True
+        elif itype == "middle_default":
+            if self.current_pin == "btn_middle" and self.config.btn_middle_action == "default" and not self.config.btn_middle_keys:
+                is_selected = True
+        elif itype == "thumb_shortcut" and self.current_pin == "thumbwheel":
             if self.thumb_mode == "shortcut":
                 is_selected = True
             elif self.config.thumbwheel_divert:
@@ -398,9 +406,14 @@ class ButtonsView(Gtk.Box):
         elif itype == "thumb_tabs" and self.current_pin == "thumbwheel" and self.config.thumbwheel_divert and self.config.thumbwheel_right_keys == ["KEY_LEFTCTRL", "KEY_PAGEDOWN"]:
             is_selected = True
         elif item.get("keys") is not None and itype == "action":
-            current_keys = self.get_current_pin_keys()
-            if current_keys == item["keys"]:
-                is_selected = True
+            if self.current_pin == "btn_top" and self.config.btn_top_action == "ToggleSmartShift":
+                is_selected = False
+            elif self.current_pin == "btn_middle" and self.config.btn_middle_action != "keypress":
+                is_selected = False
+            else:
+                current_keys = self.get_current_pin_keys()
+                if current_keys == item["keys"]:
+                    is_selected = True
 
         if is_selected:
             btn.add_css_class("selected")
@@ -602,8 +615,10 @@ class ButtonsView(Gtk.Box):
 
     def set_current_pin_keys(self, keys):
         if self.current_pin == "btn_middle":
+            self.config.btn_middle_action = "keypress"
             self.config.btn_middle_keys = keys
         elif self.current_pin == "btn_top":
+            self.config.btn_top_action = "keypress"
             self.config.btn_top_keys = keys
         elif self.current_pin == "btn_forward":
             self.config.btn_forward_keys = keys
@@ -642,7 +657,30 @@ class ButtonsView(Gtk.Box):
     def create_select_action_cb(self, item):
         def cb(btn):
             itype = item.get("type", "")
-            if itype == "thumb_default":
+            if itype == "toggle_smartshift":
+                self.thumb_mode = "preset"
+                self.active_recording_target = None
+                if self.current_pin == "btn_top":
+                    self.config.btn_top_action = "ToggleSmartShift"
+                    self.config.btn_top_keys = []
+                elif self.current_pin == "btn_middle":
+                    self.config.btn_middle_action = "ToggleSmartShift"
+                    self.config.btn_middle_keys = []
+                if self.on_changed:
+                    self.on_changed()
+                self.mouse_canvas.update_subtitles()
+                self.update_drawer()
+            elif itype == "middle_default":
+                self.thumb_mode = "preset"
+                self.active_recording_target = None
+                if self.current_pin == "btn_middle":
+                    self.config.btn_middle_action = "default"
+                    self.config.btn_middle_keys = []
+                if self.on_changed:
+                    self.on_changed()
+                self.mouse_canvas.update_subtitles()
+                self.update_drawer()
+            elif itype == "thumb_default":
                 self.thumb_mode = "default"
                 self.active_recording_target = None
                 self.config.thumbwheel_divert = False

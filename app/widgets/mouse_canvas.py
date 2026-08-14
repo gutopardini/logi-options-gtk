@@ -127,7 +127,9 @@ class MouseCanvas(Gtk.Overlay):
         
         # Middle (Wheel button)
         if "btn_middle" in self.callout_widgets:
-            if not self.config.btn_middle_keys:
+            if self.config.btn_middle_action == "ToggleSmartShift":
+                self.callout_widgets["btn_middle"]["title_lbl"].set_label("Shift wheel mode")
+            elif not self.config.btn_middle_keys or self.config.btn_middle_action == "default":
                 self.callout_widgets["btn_middle"]["title_lbl"].set_label("Middle button")
             elif self.config.btn_middle_keys == ["KEY_LEFTMETA"]:
                 self.callout_widgets["btn_middle"]["title_lbl"].set_label("Task view")
@@ -139,7 +141,7 @@ class MouseCanvas(Gtk.Overlay):
 
         # Top Button
         if "btn_top" in self.callout_widgets:
-            if not self.config.btn_top_keys:
+            if self.config.btn_top_action == "ToggleSmartShift" or not self.config.btn_top_keys:
                 self.callout_widgets["btn_top"]["title_lbl"].set_label("Shift wheel mode")
             elif self.config.btn_top_keys == ["KEY_LEFTMETA"]:
                 self.callout_widgets["btn_top"]["title_lbl"].set_label("Task view")

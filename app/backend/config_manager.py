@@ -27,8 +27,7 @@ class LogidConfig:
         
         # SmartShift
         self.smartshift_on = True
-        self.smartshift_threshold = 30
-        self.smartshift_torque = 50
+        self.smartshift_threshold = 20
         
         # HiRes Scroll
         self.hiresscroll_hires = True
@@ -45,10 +44,12 @@ class LogidConfig:
         
         # Botões
         # 0x52: Botão do Meio (Wheel Click)
+        self.btn_middle_action = "default" # "default", "ToggleSmartShift", "keypress"
         self.btn_middle_keys = [] # [] = Default middle click
         
-        # 0xc4: Botão Superior
-        self.btn_top_keys = ["KEY_LEFTMETA", "KEY_SPACE"]
+        # 0xc4: Botão Superior (Mode Shift / Shift wheel mode)
+        self.btn_top_action = "ToggleSmartShift" # "ToggleSmartShift", "keypress"
+        self.btn_top_keys = []
         
         # 0xc3: Botão de Gestos
         self.gesture_mode = "gestures" # "gestures" ou "keypress"
@@ -147,27 +148,46 @@ class LogidConfig:
 
         # Buttons
         # 0x52 (Middle button)
-        btn_52 = re.search(r"cid\s*:\s*0x52;.*?keys\s*=\s*\[(.*?)\];", text, re.DOTALL)
+        btn_52 = re.search(r"cid\s*:\s*0x52;.*?action\s*=\s*\{(.+?)\n\s*\};", text, re.DOTALL)
         if btn_52:
-            keys = re.findall(r'"([^"]+)"', btn_52.group(1))
-            self.btn_middle_keys = keys
+            body = btn_52.group(1)
+            if "ToggleSmartShift" in body:
+                self.btn_middle_action = "ToggleSmartShift"
+                self.btn_middle_keys = []
+            else:
+                k_match = re.search(r"keys\s*[:=]\s*\[(.*?)\];", body, re.DOTALL)
+                if k_match:
+                    self.btn_middle_action = "keypress"
+                    self.btn_middle_keys = re.findall(r'"([^"]+)"', k_match.group(1))
+        else:
+            self.btn_middle_action = "default"
+            self.btn_middle_keys = []
 
         # 0xc4 (Top button)
-        btn_c4 = re.search(r"cid\s*:\s*0xc4;.*?keys\s*=\s*\[(.*?)\];", text, re.DOTALL)
+        btn_c4 = re.search(r"cid\s*:\s*0xc4;.*?action\s*=\s*\{(.+?)\n\s*\};", text, re.DOTALL)
         if btn_c4:
-            keys = re.findall(r'"([^"]+)"', btn_c4.group(1))
-            if keys:
-                self.btn_top_keys = keys
+            body = btn_c4.group(1)
+            if "ToggleSmartShift" in body:
+                self.btn_top_action = "ToggleSmartShift"
+                self.btn_top_keys = []
+            else:
+                k_match = re.search(r"keys\s*[:=]\s*\[(.*?)\];", body, re.DOTALL)
+                if k_match:
+                    self.btn_top_action = "keypress"
+                    self.btn_top_keys = re.findall(r'"([^"]+)"', k_match.group(1))
+        else:
+            self.btn_top_action = "ToggleSmartShift"
+            self.btn_top_keys = []
 
         # 0x56 (Forward)
-        btn_56 = re.search(r"cid\s*:\s*0x56;.*?keys\s*=\s*\[(.*?)\];", text, re.DOTALL)
+        btn_56 = re.search(r"cid\s*:\s*0x56;.*?keys\s*[:=]\s*\[(.*?)\];", text, re.DOTALL)
         if btn_56:
             keys = re.findall(r'"([^"]+)"', btn_56.group(1))
             if keys:
                 self.btn_forward_keys = keys
 
         # 0x53 (Back)
-        btn_53 = re.search(r"cid\s*:\s*0x53;.*?keys\s*=\s*\[(.*?)\];", text, re.DOTALL)
+        btn_53 = re.search(r"cid\s*:\s*0x53;.*?keys\s*[:=]\s*\[(.*?)\];", text, re.DOTALL)
         if btn_53:
             keys = re.findall(r'"([^"]+)"', btn_53.group(1))
             if keys:
@@ -179,7 +199,7 @@ class LogidConfig:
             self.gesture_mode = "gestures"
             g_body = gestures_block.group(1)
             for direction in ["Up", "Down", "Left", "Right"]:
-                dir_match = re.search(rf'direction\s*:\s*"{direction}";.*?keys\s*=\s*\[(.*?)\];', g_body, re.DOTALL)
+                dir_match = re.search(rf'direction\s*:\s*"{direction}";.*?keys\s*[:=]\s*\[(.*?)\];', g_body, re.DOTALL)
                 if dir_match:
                     keys = re.findall(r'"([^"]+)"', dir_match.group(1))
                     if keys:
@@ -193,7 +213,7 @@ class LogidConfig:
                             self.gesture_right_keys = keys
         else:
             # Verifica se foi mapeado como Keypress simples
-            btn_c3 = re.search(r"cid\s*:\s*0xc3;.*?keys\s*=\s*\[(.*?)\];", text, re.DOTALL)
+            btn_c3 = re.search(r"cid\s*:\s*0xc3;.*?keys\s*[:=]\s*\[(.*?)\];", text, re.DOTALL)
             if btn_c3:
                 self.gesture_mode = "keypress"
                 keys = re.findall(r'"([^"]+)"', btn_c3.group(1))
@@ -206,8 +226,17 @@ class LogidConfig:
 
         buttons_entries = []
 
-        # 0x52: Middle button se customizado
-        if self.btn_middle_keys:
+        # 0x52: Middle button se customizado ou ToggleSmartShift
+        if self.btn_middle_action == "ToggleSmartShift":
+            buttons_entries.append("""    // Botão do meio (Alternar modo da roda)
+    {
+      cid: 0x52;
+      action =
+      {
+        type: "ToggleSmartShift";
+      };
+    }""")
+        elif self.btn_middle_action == "keypress" and self.btn_middle_keys:
             buttons_entries.append(f"""    // Botão do meio (Roda)
     {{
       cid: 0x52;
@@ -218,8 +247,17 @@ class LogidConfig:
       }};
     }}""")
 
-        # 0xc4: Botão Superior
-        if self.btn_top_keys:
+        # 0xc4: Botão Superior (ToggleSmartShift ou Keypress)
+        if self.btn_top_action == "ToggleSmartShift":
+            buttons_entries.append("""    // Botão superior atrás da roda (Alternar modo da roda)
+    {
+      cid: 0xc4;
+      action =
+      {
+        type: "ToggleSmartShift";
+      };
+    }""")
+        elif self.btn_top_action == "keypress" and self.btn_top_keys:
             buttons_entries.append(f"""    // Botão superior atrás da roda de rolagem
     {{
       cid: 0xc4;
@@ -329,7 +367,6 @@ class LogidConfig:
   {{
     on: {"true" if self.smartshift_on else "false"};
     threshold: {self.smartshift_threshold};
-    torque: {self.smartshift_torque};
   }};
 
   // Rolagem de alta resolução suave
