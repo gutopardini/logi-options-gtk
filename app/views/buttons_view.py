@@ -372,8 +372,17 @@ class ButtonsView(Gtk.Box):
         itype = item.get("type")
 
         # Verifica seleção
-        if itype == "thumb_shortcut" and self.current_pin == "thumbwheel" and self.thumb_mode == "shortcut":
-            is_selected = True
+        if itype == "thumb_shortcut" and self.current_pin == "thumbwheel":
+            if self.thumb_mode == "shortcut":
+                is_selected = True
+            elif self.config.thumbwheel_divert:
+                is_preset = self.config.thumbwheel_right_keys in [
+                    ["KEY_LEFTCTRL", "KEY_EQUAL"],
+                    ["KEY_VOLUMEUP"],
+                    ["KEY_LEFTCTRL", "KEY_PAGEDOWN"]
+                ]
+                if not is_preset:
+                    is_selected = True
         elif itype == "single_shortcut" and self.config.gesture_mode == "keypress" and self.current_pin == "btn_gesture":
             is_selected = True
         elif itype == "single_shortcut" and self.thumb_mode == "single_shortcut":
@@ -748,10 +757,12 @@ class ButtonsView(Gtk.Box):
         if self.active_recording_target == "scroll_up":
             self.config.thumbwheel_divert = True
             self.config.thumbwheel_left_keys = keys
+            self.thumb_mode = "shortcut"
             self.active_recording_target = None
         elif self.active_recording_target == "scroll_down":
             self.config.thumbwheel_divert = True
             self.config.thumbwheel_right_keys = keys
+            self.thumb_mode = "shortcut"
             self.active_recording_target = None
         elif self.active_recording_target == "single_key":
             self.set_current_pin_keys(keys)

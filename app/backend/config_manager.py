@@ -38,9 +38,9 @@ class LogidConfig:
         # Thumbwheel
         self.thumbwheel_divert = True
         self.thumbwheel_invert = False
-        self.thumbwheel_left_interval = 7
+        self.thumbwheel_left_interval = 1
         self.thumbwheel_left_keys = ["KEY_LEFTMETA", "KEY_PAGEUP"]
-        self.thumbwheel_right_interval = 7
+        self.thumbwheel_right_interval = 1
         self.thumbwheel_right_keys = ["KEY_LEFTMETA", "KEY_PAGEDOWN"]
         
         # Botões
