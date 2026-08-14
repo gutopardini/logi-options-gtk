@@ -12,9 +12,13 @@ mkdir -p "$HOME/.local/bin"
 mkdir -p "$HOME/.local/share/applications"
 
 # Diretórios de Ícones
-for size in 512x512 256x256 128x128 64x64 48x48 32x32 scalable; do
+for size in 512x512 256x256 128x128 64x64 48x48 32x32; do
   mkdir -p "$HOME/.local/share/icons/hicolor/$size/apps"
 done
+
+# Remove qualquer SVG antigo do cache
+rm -f "$HOME/.local/share/icons/hicolor/scalable/apps/io.github.pixlone.logioptions.gtk.svg"
+rm -f "$HOME/.local/share/icons/hicolor/scalable/apps/logi-options-plus.svg"
 
 # 2. Instala os ícones oficiais PNG em todas as resoluções
 for size in 512 256 128 64 48 32; do
@@ -23,12 +27,6 @@ for size in 512 256 128 64 48 32; do
     cp "$ASSETS_DIR/logi-options-plus-${size}.png" "$HOME/.local/share/icons/hicolor/${size}x${size}/apps/io.github.pixlone.logioptions.gtk.png"
   fi
 done
-
-# Ícone SVG como fallback escalável
-if [ -f "$ASSETS_DIR/logi-options-plus.svg" ]; then
-  cp "$ASSETS_DIR/logi-options-plus.svg" "$HOME/.local/share/icons/hicolor/scalable/apps/logi-options-plus.svg"
-  cp "$ASSETS_DIR/logi-options-plus.svg" "$HOME/.local/share/icons/hicolor/scalable/apps/io.github.pixlone.logioptions.gtk.svg"
-fi
 
 # 3. Cria script executável standalone em ~/.local/bin/logi-options
 rm -f "$HOME/.local/bin/logi-options"

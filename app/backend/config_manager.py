@@ -289,15 +289,6 @@ class LogidConfig:
               type: "Keypress";
               keys: [{format_keys(self.gesture_right_keys)}];
             }};
-          }},
-          {{
-            direction: "None";
-            mode: "OnRelease";
-            action =
-            {{
-              type: "Keypress";
-              keys: [{format_keys(self.gesture_single_keys)}];
-            }};
           }}
         );
       }};
