@@ -99,14 +99,8 @@ class MainWindow(Adw.ApplicationWindow):
         window_handle.set_child(header_bar)
         center_box.append(window_handle)
 
-        # Título do Mouse com Botão Voltar (← MX Master 3S)
+        # Título do Mouse (MX Master 3S)
         title_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
-        
-        self.back_btn = Gtk.Button(label="←")
-        self.back_btn.add_css_class("back-nav-btn")
-        self.back_btn.set_tooltip_text("Voltar")
-        self.back_btn.connect("clicked", self.on_back_btn_clicked)
-        title_box.append(self.back_btn)
 
         dev_title = Gtk.Label(label="MX Master 3S")
         dev_title.add_css_class("device-title")
@@ -305,9 +299,3 @@ class MainWindow(Adw.ApplicationWindow):
 
     def on_drawer_toggled(self, is_open):
         self.sidebar.set_visible(not is_open)
-
-    def on_back_btn_clicked(self, btn):
-        if hasattr(self, "buttons_view") and self.buttons_view.current_pin:
-            self.buttons_view.close_drawer()
-        else:
-            self.close()
