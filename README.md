@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🖱️ Logi Options+ (Linux GTK4 / Libadwaita)
+# 🖱️ Logi Options+ (Linux GTK4 / Libadwaita) MX MASTER 3s
 
 **A native, pixel-perfect GTK4 / Libadwaita recreation of Logitech Options+ for the Logitech MX Master 3S on Linux.**
 
