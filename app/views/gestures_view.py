@@ -7,9 +7,10 @@ gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
 from gi.repository import Gtk, Adw
 
+from ..i18n import _
 from ..widgets.dpad_widget import DPadWidget
 from ..widgets.shortcut_recorder import ShortcutRecorderDialog
-from ..backend.keycodes import PRESET_ACTIONS, format_keys_display
+from ..backend.keycodes import format_keys_display
 
 
 class GesturesView(Adw.PreferencesPage):
@@ -21,8 +22,8 @@ class GesturesView(Adw.PreferencesPage):
 
         # 1. Bússola Visual de Gestos
         visual_group = Adw.PreferencesGroup(
-            title="🖐️ Bússola de Gestos do Polegar (0xC3)",
-            description="Mantenha o botão do polegar pressionado e mova o mouse em qualquer direção para disparar o atalho."
+            title=_("🖐️ Thumb Gesture Compass (0xC3)"),
+            description=_("Hold down the thumb button and move the mouse in any direction to trigger the shortcut.")
         )
 
         dpad_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=16)
@@ -38,15 +39,15 @@ class GesturesView(Adw.PreferencesPage):
 
         # 2. Configuração da Direção Selecionada
         self.direction_group = Adw.PreferencesGroup(
-            title="🎯 Ação da Direção Selecionada",
-            description="Personalize o atalho disparado ao mover o mouse na direção escolhida acima"
+            title=_("🎯 Selected Direction Action"),
+            description=_("Customize the shortcut triggered when moving the mouse in the direction chosen above")
         )
         
         self.active_row = Adw.ActionRow(
-            title="⬆️ Deslizar para CIMA",
-            subtitle="Atalho Atual: Super"
+            title=_("⬆️ Swipe UP"),
+            subtitle=_("Current Shortcut: Super")
         )
-        self.record_btn = Gtk.Button(label="⌨️ Gravar Teclas...")
+        self.record_btn = Gtk.Button(label=_("⌨️ Record Keys..."))
         self.record_btn.add_css_class("action-assign-btn")
         self.record_btn.set_valign(Gtk.Align.CENTER)
         self.record_btn.connect("clicked", self.open_recorder)
@@ -56,16 +57,16 @@ class GesturesView(Adw.PreferencesPage):
 
         # 3. Presets Rápidos de Gestos (Cada um em uma linha estruturada)
         preset_group = Adw.PreferencesGroup(
-            title="⚡ Presets Rápidos",
-            description="Esquemas prontos de 4 direções para aplicar instantaneamente"
+            title=_("⚡ Quick Presets"),
+            description=_("Ready-made 4-direction schemes to apply instantly")
         )
 
         # Preset GNOME
         row_gnome = Adw.ActionRow(
-            title="🖥️ Produtividade GNOME",
-            subtitle="Cima/Baixo: Visão Geral | Esq/Dir: Áreas de Trabalho"
+            title=_("🖥️ GNOME Productivity"),
+            subtitle=_("Up/Down: Overview | Left/Right: Workspaces")
         )
-        btn_g = Gtk.Button(label="Aplicar Preset")
+        btn_g = Gtk.Button(label=_("Apply Preset"))
         btn_g.add_css_class("action-assign-btn")
         btn_g.set_valign(Gtk.Align.CENTER)
         btn_g.connect("clicked", self.apply_preset_gnome)
@@ -74,10 +75,10 @@ class GesturesView(Adw.PreferencesPage):
 
         # Preset Mídia
         row_media = Adw.ActionRow(
-            title="🎵 Controle Multimídia",
-            subtitle="Cima/Baixo: Volume +/- | Esq/Dir: Faixa Anterior/Próxima"
+            title=_("🎵 Media Controls"),
+            subtitle=_("Up/Down: Volume +/- | Left/Right: Prev/Next Track")
         )
-        btn_m = Gtk.Button(label="Aplicar Preset")
+        btn_m = Gtk.Button(label=_("Apply Preset"))
         btn_m.add_css_class("action-assign-btn")
         btn_m.set_valign(Gtk.Align.CENTER)
         btn_m.connect("clicked", self.apply_preset_media)
@@ -86,10 +87,10 @@ class GesturesView(Adw.PreferencesPage):
 
         # Preset Encaixe de Janelas
         row_snap = Adw.ActionRow(
-            title="🪟 Encaixe de Janelas (Window Snapping)",
-            subtitle="Cima: Maximizar | Baixo: Restaurar | Esq/Dir: Metade da Tela"
+            title=_("🪟 Window Snapping"),
+            subtitle=_("Up: Maximize | Down: Restore | Left/Right: Split Screen")
         )
-        btn_s = Gtk.Button(label="Aplicar Preset")
+        btn_s = Gtk.Button(label=_("Apply Preset"))
         btn_s.add_css_class("action-assign-btn")
         btn_s.set_valign(Gtk.Align.CENTER)
         btn_s.connect("clicked", self.apply_preset_snap)
@@ -130,15 +131,16 @@ class GesturesView(Adw.PreferencesPage):
 
     def update_direction_ui(self):
         dir_labels = {
-            "Up": "⬆️ Deslizar para CIMA",
-            "Down": "⬇️ Deslizar para BAIXO",
-            "Left": "⬅️ Deslizar para ESQUERDA",
-            "Right": "➡️ Deslizar para DIREITA"
+            "Up": _("⬆️ Swipe UP"),
+            "Down": _("⬇️ Swipe DOWN"),
+            "Left": _("⬅️ Swipe LEFT"),
+            "Right": _("➡️ Swipe RIGHT")
         }
         name = dir_labels.get(self.current_direction, self.current_direction)
         keys = self.get_keys_for_dir(self.current_direction)
         self.active_row.set_title(name)
-        self.active_row.set_subtitle(f"Atalho Atual: {format_keys_display(keys)}")
+        keys_str = format_keys_display(keys)
+        self.active_row.set_subtitle(_("Current Shortcut: {keys}").format(keys=keys_str))
 
     def open_recorder(self, btn):
         root = self.get_root()

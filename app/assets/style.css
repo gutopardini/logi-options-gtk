@@ -136,7 +136,7 @@ window {
   box-shadow: 0 4px 16px var(--logi-cyan-glow);
 }
 
-/* Badge de Bateria Oficial (40% 🔋 ⚡) */
+/* Badge de Bateria Oficial (85% 🔋 ᛒ / ⚡) */
 .official-battery-badge {
   background: #12141a;
   border: 1px solid #222632;
@@ -145,6 +145,24 @@ window {
   font-weight: 800;
   font-size: 0.85rem;
   color: var(--logi-cyan);
+  transition: all 150ms ease;
+}
+
+.official-battery-badge:hover {
+  background: #181b24;
+  border-color: var(--logi-cyan);
+  cursor: pointer;
+}
+
+.official-battery-badge.offline {
+  border-color: #442222;
+  color: #a05555;
+  background: #161214;
+}
+
+.official-battery-badge.charging {
+  color: #ffe600;
+  border-color: rgba(255, 230, 0, 0.4);
 }
 
 /* --------------------------------------------------------------------------
@@ -370,58 +388,114 @@ window {
 }
 
 /* --------------------------------------------------------------------------
-   7. Estilos Easy-Switch Oficiais (Screenshot Oficial)
+   7. Estilos Easy-Switch Oficiais (Screenshot Oficial 1:1)
    -------------------------------------------------------------------------- */
-.easy-switch-badge-active {
-  background: var(--logi-cyan);
-  border-radius: 9999px;
-  min-width: 36px;
-  min-height: 36px;
+.easy-switch-panel-floating {
+  margin-right: 48px;
+  margin-top: 24px;
+  margin-bottom: 24px;
 }
 
-.easy-switch-num-active {
-  color: #0b0d12;
+.easy-switch-card-official {
+  background-color: #06070a;
+  border-radius: 12px;
+  padding: 24px 28px;
+  min-width: 380px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+.easy-switch-title-official {
+  font-size: 1.55rem;
   font-weight: 800;
-  font-size: 0.95rem;
+  color: #ffffff;
+  letter-spacing: -0.2px;
+}
+
+.easy-switch-sub-official {
+  font-size: 0.88rem;
+  color: #9aa0ae;
+  line-height: 1.4;
+  margin-bottom: 20px;
+}
+
+.easy-switch-row-btn {
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 8px;
+  transition: all 150ms ease;
+}
+
+.easy-switch-row-btn:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.easy-switch-badge-active {
+  background: var(--logi-cyan);
+  color: #000000;
+  font-weight: 800;
+  font-size: 1.05rem;
+  border-radius: 9999px;
+  min-width: 38px;
+  min-height: 38px;
+  max-width: 38px;
+  max-height: 38px;
+  box-shadow: 0 0 14px var(--logi-cyan-glow);
+  padding: 0;
+  margin: 0;
 }
 
 .easy-switch-badge-paired {
   background: transparent;
-  border: 1.8px solid #ffffff;
-  border-radius: 9999px;
-  min-width: 36px;
-  min-height: 36px;
-}
-
-.easy-switch-num-paired {
   color: #ffffff;
-  font-weight: 700;
-  font-size: 0.95rem;
+  border: 2px solid #ffffff;
+  font-weight: 800;
+  font-size: 1.05rem;
+  border-radius: 9999px;
+  min-width: 38px;
+  min-height: 38px;
+  max-width: 38px;
+  max-height: 38px;
+  padding: 0;
+  margin: 0;
 }
 
 .easy-switch-badge-dim {
   background: transparent;
-  border: 1.8px solid #3b4254;
+  color: #585f73;
+  border: 2px solid #2e3442;
+  font-weight: 800;
+  font-size: 1.05rem;
   border-radius: 9999px;
-  min-width: 36px;
-  min-height: 36px;
+  min-width: 38px;
+  min-height: 38px;
+  max-width: 38px;
+  max-height: 38px;
+  padding: 0;
+  margin: 0;
 }
 
-.easy-switch-num-dim {
-  color: #5c6479;
-  font-weight: 700;
-  font-size: 0.95rem;
-}
-
-.action-title-white {
+.easy-switch-host-title {
   color: #ffffff;
-  font-weight: 700;
+  font-weight: 800;
+  font-size: 1.05rem;
+}
+
+.easy-switch-host-sub {
+  color: #8e95a5;
+  font-size: 0.86rem;
+}
+
+.easy-switch-unpaired-text {
+  color: #62697b;
+  font-weight: 600;
   font-size: 0.95rem;
 }
 
 .device-separator {
-  background: #1c2230;
-  margin: 4px 0;
+  background: #141720;
+  margin: 6px 0;
+  min-height: 1px;
 }
 
 /* --------------------------------------------------------------------------

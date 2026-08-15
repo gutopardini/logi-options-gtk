@@ -1,7 +1,8 @@
 [Desktop Entry]
 Name=Logi Options+
-Comment=Logitech Options+ oficial para Linux (MX Master 3S)
-Exec=/home/gutopardini/Git/personal/logi-options-gtk/launch.sh
+Comment=Logitech Options+ for Linux (MX Master 3S)
+Comment[pt_BR]=Logitech Options+ oficial para Linux (MX Master 3S)
+Exec=logi-options
 Icon=io.github.pixlone.logioptions.gtk
 Terminal=false
 Type=Application

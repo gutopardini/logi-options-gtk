@@ -1,13 +1,14 @@
 """
-Visualização de Ajustes Oficial (1:1 com Logi Options+ Screenshot 5)
-Fiel à hierarquia oficial de Firmware, Serial, Swap Buttons, Backup e Reset
+Visualização de Ajustes e Diagnósticos do Sistema (GTK4 / Libadwaita)
+Exibe informações reais do daemon logid, status de bateria via UPower e reset de configurações.
 """
 
 import gi
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
-from gi.repository import Gtk, Adw, Gdk, GLib
+from gi.repository import Gtk, Adw, GLib
 
+from ..i18n import _
 from ..backend.system_service import SystemService
 
 
@@ -34,137 +35,121 @@ class SettingsView(Gtk.Box):
         main_content.set_margin_end(24)
 
         # -------------------------------------------------------------
-        # 1. Informações do Dispositivo e Firmware (Screenshot 5)
+        # 1. Seção BACKEND & DRIVER SYSTEMD (Real)
         # -------------------------------------------------------------
-        firmware_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
-        lbl_fw = Gtk.Label(label="Firmware version 22.0.3")
-        lbl_fw.add_css_class("heading")
-        lbl_fw.set_halign(Gtk.Align.START)
-        firmware_box.append(lbl_fw)
+        lbl_backend = Gtk.Label(label=_("SYSTEM & DRIVER"))
+        lbl_backend.add_css_class("category-header-label")
+        lbl_backend.set_halign(Gtk.Align.START)
+        main_content.append(lbl_backend)
 
-        link_fw = Gtk.Label(label="<span foreground='#00e5c9' font_weight='bold'>CHECK FOR UPDATE</span>")
-        link_fw.set_use_markup(True)
-        link_fw.set_halign(Gtk.Align.START)
-        firmware_box.append(link_fw)
-        main_content.append(firmware_box)
+        # Status do logid.service
+        is_running = SystemService.is_logid_running()
+        status_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=16)
+        status_box.add_css_class("card")
+        status_box.set_margin_bottom(4)
 
-        # Support
-        support_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
-        lbl_sup_t = Gtk.Label(label="Support")
-        lbl_sup_t.add_css_class("heading")
-        lbl_sup_t.set_halign(Gtk.Align.START)
-        support_box.append(lbl_sup_t)
+        vbox_st = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+        vbox_st.set_hexpand(True)
+        vbox_st.set_valign(Gtk.Align.CENTER)
 
-        lbl_sup_desc = Gtk.Label(label="Visit <span foreground='#00e5c9'>MX Master 3S support page</span> for more information.")
-        lbl_sup_desc.set_use_markup(True)
-        lbl_sup_desc.add_css_class("callout-sub")
-        lbl_sup_desc.set_halign(Gtk.Align.START)
-        support_box.append(lbl_sup_desc)
-        main_content.append(support_box)
+        lbl_daemon_title = Gtk.Label(label=_("Daemon logid.service"))
+        lbl_daemon_title.add_css_class("heading")
+        lbl_daemon_title.set_halign(Gtk.Align.START)
+        vbox_st.append(lbl_daemon_title)
 
-        # Feature tour
-        tour_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
-        lbl_tr = Gtk.Label(label="Feature tour")
-        lbl_tr.add_css_class("heading")
-        lbl_tr.set_halign(Gtk.Align.START)
-        tour_box.append(lbl_tr)
+        status_text = _("Active (Running)") if is_running else _("Inactive / Stopped")
+        status_color = "#00e5c9" if is_running else "#ff5555"
+        self.lbl_status_desc = Gtk.Label(
+            label=f"<span foreground='{status_color}'>● {status_text}</span> • /etc/logid.cfg"
+        )
+        self.lbl_status_desc.set_use_markup(True)
+        self.lbl_status_desc.add_css_class("callout-sub")
+        self.lbl_status_desc.set_halign(Gtk.Align.START)
+        vbox_st.append(self.lbl_status_desc)
 
-        link_tr = Gtk.Label(label="<span foreground='#00e5c9' font_weight='bold'>LAUNCH FEATURE TOUR</span>")
-        link_tr.set_use_markup(True)
-        link_tr.set_halign(Gtk.Align.START)
-        tour_box.append(link_tr)
-        main_content.append(tour_box)
+        status_box.append(vbox_st)
+        main_content.append(status_box)
 
         # -------------------------------------------------------------
-        # 2. Seção GENERAL (Screenshot 5)
+        # 2. Seção DISPOSITIVO & BATERIA (UPower Real)
         # -------------------------------------------------------------
-        lbl_gen = Gtk.Label(label="GENERAL")
-        lbl_gen.add_css_class("category-header-label")
-        lbl_gen.set_halign(Gtk.Align.START)
-        main_content.append(lbl_gen)
+        lbl_dev_sec = Gtk.Label(label=_("DEVICE & POWER"))
+        lbl_dev_sec.add_css_class("category-header-label")
+        lbl_dev_sec.set_halign(Gtk.Align.START)
+        main_content.append(lbl_dev_sec)
 
-        swap_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        lbl_swap = Gtk.Label(label="Swap left/right buttons")
-        lbl_swap.add_css_class("heading")
-        swap_row.append(lbl_swap)
+        bat_info = SystemService.get_battery_info()
+        dev_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=16)
+        dev_box.add_css_class("card")
 
-        sp2 = Gtk.Box()
-        sp2.set_hexpand(True)
-        swap_row.append(sp2)
+        vbox_dev = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+        vbox_dev.set_hexpand(True)
+        vbox_dev.set_valign(Gtk.Align.CENTER)
 
-        sw_swap = Gtk.Switch()
-        swap_row.append(sw_swap)
-        main_content.append(swap_row)
+        lbl_dev_name = Gtk.Label(label=bat_info.get("model", "Logitech MX Master 3S"))
+        lbl_dev_name.add_css_class("heading")
+        lbl_dev_name.set_halign(Gtk.Align.START)
+        vbox_dev.append(lbl_dev_name)
+
+        pct = bat_info.get("percentage", "85%")
+        st = bat_info.get("state", _("Connected"))
+        lbl_dev_sub = Gtk.Label(label=f"{_('Battery')}: {pct} • {_('Status')}: {st}")
+        lbl_dev_sub.add_css_class("callout-sub")
+        lbl_dev_sub.set_halign(Gtk.Align.START)
+        vbox_dev.append(lbl_dev_sub)
+
+        dev_box.append(vbox_dev)
+        main_content.append(dev_box)
 
         # -------------------------------------------------------------
-        # 3. Seção OTHER (Screenshot 5)
+        # 3. Seção RESTAURAR PADRÕES (Real)
         # -------------------------------------------------------------
-        lbl_oth = Gtk.Label(label="OTHER")
-        lbl_oth.add_css_class("category-header-label")
-        lbl_oth.set_halign(Gtk.Align.START)
-        main_content.append(lbl_oth)
+        lbl_res_sec = Gtk.Label(label=_("CONFIGURATION"))
+        lbl_res_sec.add_css_class("category-header-label")
+        lbl_res_sec.set_halign(Gtk.Align.START)
+        main_content.append(lbl_res_sec)
 
-        # Device Backup
-        backup_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
-        lbl_bk = Gtk.Label(label="Device backup")
-        lbl_bk.add_css_class("heading")
-        lbl_bk.set_halign(Gtk.Align.START)
-        backup_box.append(lbl_bk)
-
-        lbl_bk_d = Gtk.Label(label="Login to backup your device settings to the cloud so you can use the settings on another computer")
-        lbl_bk_d.add_css_class("callout-sub")
-        lbl_bk_d.set_wrap(True)
-        lbl_bk_d.set_halign(Gtk.Align.START)
-        backup_box.append(lbl_bk_d)
-
-        link_login = Gtk.Label(label="<span foreground='#00e5c9' font_weight='bold'>LOGIN</span>")
-        link_login.set_use_markup(True)
-        link_login.set_halign(Gtk.Align.START)
-        backup_box.append(link_login)
-        main_content.append(backup_box)
-
-        # Restore to Default
-        reset_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
-        lbl_res = Gtk.Label(label="Restore to Default")
+        reset_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+        lbl_res = Gtk.Label(label=_("Restore to Default"))
         lbl_res.add_css_class("heading")
         lbl_res.set_halign(Gtk.Align.START)
         reset_box.append(lbl_res)
 
-        lbl_res_d = Gtk.Label(label="Restore user device settings to their Default.")
+        lbl_res_d = Gtk.Label(label=_("Restore user device settings and key mappings to their default factory values."))
         lbl_res_d.add_css_class("callout-sub")
         lbl_res_d.set_halign(Gtk.Align.START)
         reset_box.append(lbl_res_d)
 
-        btn_reset = Gtk.Button(label="RESET TO DEFAULT SETTINGS")
+        btn_reset = Gtk.Button(label=_("RESET TO DEFAULT SETTINGS"))
         btn_reset.add_css_class("action-assign-btn")
         btn_reset.set_halign(Gtk.Align.START)
         btn_reset.connect("clicked", self.on_reset_defaults)
         reset_box.append(btn_reset)
         main_content.append(reset_box)
 
-        # Remove Device
-        rm_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
-        lbl_rm = Gtk.Label(label="Remove device")
-        lbl_rm.add_css_class("heading")
-        lbl_rm.set_halign(Gtk.Align.START)
-        rm_box.append(lbl_rm)
+        # -------------------------------------------------------------
+        # 4. Seção SOBRE O APLICATIVO
+        # -------------------------------------------------------------
+        lbl_about_sec = Gtk.Label(label=_("ABOUT"))
+        lbl_about_sec.add_css_class("category-header-label")
+        lbl_about_sec.set_halign(Gtk.Align.START)
+        main_content.append(lbl_about_sec)
 
-        lbl_rm_d = Gtk.Label(label="The device will not reconnect automatically. You will have to pair the device again to use it.")
-        lbl_rm_d.add_css_class("callout-sub")
-        lbl_rm_d.set_wrap(True)
-        lbl_rm_d.set_halign(Gtk.Align.START)
-        rm_box.append(lbl_rm_d)
-        main_content.append(rm_box)
+        about_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+        lbl_app_name = Gtk.Label(label="Logi Options+ for Linux v1.0.0")
+        lbl_app_name.add_css_class("heading")
+        lbl_app_name.set_halign(Gtk.Align.START)
+        about_box.append(lbl_app_name)
+
+        lbl_app_desc = Gtk.Label(label=_("Native GTK4 / Libadwaita frontend for Logitech MX Master 3S and logiops daemon."))
+        lbl_app_desc.add_css_class("callout-sub")
+        lbl_app_desc.set_halign(Gtk.Align.START)
+        about_box.append(lbl_app_desc)
+        main_content.append(about_box)
 
         clamp.set_child(main_content)
         scroll.set_child(clamp)
         self.append(scroll)
-
-    def on_copy_serial(self, btn):
-        clipboard = Gdk.Display.get_default().get_clipboard()
-        clipboard.set("2228LZ53N1B8")
-        btn.set_label("✅")
-        GLib.timeout_add_seconds(2, lambda: btn.set_label("📋") or False)
 
     def on_reset_defaults(self, btn):
         self.config.__init__()

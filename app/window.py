@@ -1,19 +1,19 @@
 """
 Janela Principal do Logi Options+ (Design 1:1 Oficial da Logitech em GTK4 / Libadwaita)
-Fiel às capturas de tela oficiais com perfis de aplicativos reais (+ ADD APPLICATION)
+Fiel às capturas de tela oficiais com navegação fluida, gavetas animadas e suporte a atalhos.
 """
 
 import gi
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
-from gi.repository import Gtk, Adw, Gio, GLib
+from gi.repository import Gtk, Adw, Gio, GLib, Gdk
 
+from .i18n import _
 from .backend.config_manager import LogidConfig
 from .backend.system_service import SystemService
 from .backend.app_manager import AppManager
 from .views.buttons_view import ButtonsView
 from .views.point_scroll_view import PointScrollView
-from .views.easy_switch_view import EasySwitchView
 from .views.settings_view import SettingsView
 from .widgets.add_app_dialog import AddAppDialog
 
@@ -21,7 +21,7 @@ from .widgets.add_app_dialog import AddAppDialog
 class MainWindow(Adw.ApplicationWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.set_title("Logi Options+ (MX Master 3S)")
+        self.set_title(_("Logi Options+ (MX Master 3S)"))
         self.set_default_size(1280, 800)
 
         # Gerenciador de Configuração e Perfis
@@ -41,21 +41,20 @@ class MainWindow(Adw.ApplicationWindow):
         # -------------------------------------------------------------
         # 1. Barra Lateral Esquerda Oficial (Left Sidebar)
         # -------------------------------------------------------------
-        sidebar = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
-        sidebar.add_css_class("sidebar-container")
-        sidebar.set_size_request(220, -1)
-        root_box.append(sidebar)
+        self.sidebar = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+        self.sidebar.add_css_class("sidebar-container")
+        self.sidebar.set_size_request(220, -1)
+        root_box.append(self.sidebar)
 
         top_spacer = Gtk.Box()
         top_spacer.set_size_request(-1, 85)
-        sidebar.append(top_spacer)
+        self.sidebar.append(top_spacer)
 
         self.tab_buttons = {}
         nav_items = [
-            ("buttons", "BUTTONS", "input-mouse-symbolic"),
-            ("scroll", "POINT AND SCROLL", "preferences-desktop-peripherals-symbolic"),
-            ("easy_switch", "EASY-SWITCH", "video-display-symbolic"),
-            ("settings", "SETTINGS", "emblem-system-symbolic"),
+            ("buttons", _("BUTTONS"), "input-mouse-symbolic"),
+            ("scroll", _("POINT AND SCROLL"), "preferences-desktop-peripherals-symbolic"),
+            ("settings", _("SETTINGS"), "emblem-system-symbolic"),
         ]
 
         for tab_id, label_text, icon_name in nav_items:
@@ -70,20 +69,24 @@ class MainWindow(Adw.ApplicationWindow):
             btn.set_child(box)
 
             btn.connect("clicked", self.create_nav_callback(tab_id))
-            sidebar.append(btn)
+            self.sidebar.append(btn)
             self.tab_buttons[tab_id] = btn
 
         bottom_spacer = Gtk.Box()
         bottom_spacer.set_vexpand(True)
-        sidebar.append(bottom_spacer)
+        self.sidebar.append(bottom_spacer)
 
-        # Badge de Bateria Real
-        bat_info = SystemService.get_battery_info()
-        self.bat_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        # Badge de Bateria Real com Auto-Detecção e Clique para Redetectar
+        self.bat_box = Gtk.Button()
         self.bat_box.add_css_class("official-battery-badge")
-        self.bat_lbl = Gtk.Label(label=f"{bat_info['percentage']}  🔋  ⚡")
-        self.bat_box.append(self.bat_lbl)
-        sidebar.append(self.bat_box)
+        self.bat_lbl = Gtk.Label(label="--% 🔋")
+        self.bat_box.set_child(self.bat_lbl)
+        self.bat_box.connect("clicked", lambda b: self.update_battery_status(user_initiated=True))
+        self.sidebar.append(self.bat_box)
+
+        # Inicia atualização inicial e polling dinâmico a cada 2 segundos
+        self.update_battery_status(user_initiated=False)
+        GLib.timeout_add_seconds(2, self.update_battery_status)
 
         # -------------------------------------------------------------
         # 2. Área Central e Header Superior Oficial (Arrastável com WindowHandle)
@@ -99,8 +102,14 @@ class MainWindow(Adw.ApplicationWindow):
         window_handle.set_child(header_bar)
         center_box.append(window_handle)
 
-        # Título do Mouse (MX Master 3S)
+        # Título do Mouse (← MX Master 3S)
         title_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+
+        self.back_nav_btn = Gtk.Button(label="←")
+        self.back_nav_btn.add_css_class("back-nav-btn")
+        self.back_nav_btn.set_visible(False)
+        self.back_nav_btn.connect("clicked", self.on_back_nav_clicked)
+        title_box.append(self.back_nav_btn)
 
         dev_title = Gtk.Label(label="MX Master 3S")
         dev_title.add_css_class("device-title")
@@ -112,13 +121,13 @@ class MainWindow(Adw.ApplicationWindow):
         header_spacer.set_hexpand(True)
         header_bar.append(header_spacer)
 
-        # Barra de Perfis de Aplicativos (Temporariamente desativada a pedido do usuário)
-        # self.profiles_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
-        # header_bar.append(self.profiles_box)
-        # self.render_app_profiles_bar()
+        # Barra de Perfis de Aplicativos (Oculta temporariamente)
+        self.profiles_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        self.profiles_box.set_visible(False)
+        header_bar.append(self.profiles_box)
 
         # Botão Aplicar no Sistema
-        self.apply_btn = Gtk.Button(label="Aplicar no Sistema")
+        self.apply_btn = Gtk.Button(label=_("Apply to System"))
         self.apply_btn.add_css_class("official-apply-btn")
         self.apply_btn.connect("clicked", self.on_apply_clicked)
         header_bar.append(self.apply_btn)
@@ -126,7 +135,7 @@ class MainWindow(Adw.ApplicationWindow):
         # Botão Fechar Oficial (Apenas '✕')
         close_btn = Gtk.Button(label="✕")
         close_btn.add_css_class("close-nav-btn")
-        close_btn.set_tooltip_text("Fechar o Logi Options+")
+        close_btn.set_tooltip_text(_("Close Logi Options+"))
         close_btn.connect("clicked", lambda b: self.close())
         header_bar.append(close_btn)
 
@@ -141,13 +150,11 @@ class MainWindow(Adw.ApplicationWindow):
         center_box.append(self.view_stack)
 
         self.buttons_view = ButtonsView(self.config, self.on_config_modified, on_drawer_toggle_cb=self.on_drawer_toggled)
-        self.point_scroll_view = PointScrollView(self.config, self.on_config_modified)
-        self.easy_switch_view = EasySwitchView(self.config, self.on_config_modified)
+        self.point_scroll_view = PointScrollView(self.config, self.on_config_modified, on_drawer_toggle_cb=self.on_drawer_toggled)
         self.settings_view = SettingsView(self.config, self.on_config_modified)
 
         self.view_stack.add_named(self.buttons_view, "buttons")
         self.view_stack.add_named(self.point_scroll_view, "scroll")
-        self.view_stack.add_named(self.easy_switch_view, "easy_switch")
         self.view_stack.add_named(self.settings_view, "settings")
 
         # Atalhos Globais (Esc / Ctrl+Q)
@@ -166,11 +173,11 @@ class MainWindow(Adw.ApplicationWindow):
         btn_global = Gtk.Button(label="⊞")
         btn_global.add_css_class("global-app-btn")
         if self.active_profile == "global":
-            btn_global.set_tooltip_text("Configurações Globais (Ativo)")
+            btn_global.set_tooltip_text(_("Global Settings (Active)"))
         else:
             btn_global.remove_css_class("global-app-btn")
             btn_global.add_css_class("add-app-btn")
-            btn_global.set_tooltip_text("Alternar para Configurações Globais")
+            btn_global.set_tooltip_text(_("Switch to Global Settings"))
         btn_global.connect("clicked", lambda b: self.set_active_profile("global"))
         self.profiles_box.append(btn_global)
 
@@ -200,14 +207,14 @@ class MainWindow(Adw.ApplicationWindow):
             app_box.append(del_lbl)
 
             app_btn.set_child(app_box)
-            app_btn.set_tooltip_text(f"Perfil de: {app['name']}")
+            app_btn.set_tooltip_text(_("Profile for: {name}").format(name=app['name']))
             app_btn.connect("clicked", self.create_app_profile_cb(app["name"]))
             self.profiles_box.append(app_btn)
 
         # 3. Botão "+ ADD APPLICATION"
-        add_app_btn = Gtk.Button(label="+ ADD APPLICATION")
+        add_app_btn = Gtk.Button(label=_("+ ADD APPLICATION"))
         add_app_btn.add_css_class("add-app-btn")
-        add_app_btn.set_tooltip_text("Adicionar perfil para software instalado")
+        add_app_btn.set_tooltip_text(_("Add profile for installed application"))
         add_app_btn.connect("clicked", self.on_add_application_clicked)
         self.profiles_box.append(add_app_btn)
 
@@ -222,7 +229,7 @@ class MainWindow(Adw.ApplicationWindow):
         AppManager.save_profiles(self.profiles_data)
         self.render_app_profiles_bar()
 
-        toast = Adw.Toast.new(f"📌 Perfil ativo: {profile_name}")
+        toast = Adw.Toast.new(_("📌 Active profile: {name}").format(name=profile_name))
         toast.set_timeout(2)
         self.toast_overlay.add_toast(toast)
 
@@ -246,12 +253,18 @@ class MainWindow(Adw.ApplicationWindow):
         AppManager.save_profiles(self.profiles_data)
         self.render_app_profiles_bar()
 
-        toast = Adw.Toast.new(f"✅ {len(selected_apps)} aplicativo(s) adicionado(s) com sucesso!")
+        toast = Adw.Toast.new(_("✅ {count} application(s) added successfully!").format(count=len(selected_apps)))
         toast.set_timeout(3)
         self.toast_overlay.add_toast(toast)
 
     def on_window_key_pressed(self, controller, keyval, keycode, state):
         if keyval == Gdk.KEY_Escape:
+            if hasattr(self, "buttons_view") and self.buttons_view.drawer_box.get_visible():
+                self.buttons_view.close_drawer()
+                return Gdk.EVENT_STOP
+            if hasattr(self, "point_scroll_view") and self.point_scroll_view.drawer_box.get_visible():
+                self.point_scroll_view.close_drawer()
+                return Gdk.EVENT_STOP
             self.close()
             return Gdk.EVENT_STOP
         if (state & Gdk.ModifierType.CONTROL_MASK) and (keyval == Gdk.KEY_q or keyval == Gdk.KEY_Q):
@@ -259,12 +272,23 @@ class MainWindow(Adw.ApplicationWindow):
             return Gdk.EVENT_STOP
         return Gdk.EVENT_PROPAGATE
 
+    def on_back_nav_clicked(self, btn):
+        if hasattr(self, "buttons_view") and self.buttons_view.drawer_box.get_visible():
+            self.buttons_view.close_drawer()
+        if hasattr(self, "point_scroll_view") and self.point_scroll_view.drawer_box.get_visible():
+            self.point_scroll_view.close_drawer()
+
     def create_nav_callback(self, tab_id):
         def cb(button):
             self.switch_tab(tab_id)
         return cb
 
     def switch_tab(self, tab_id):
+        if hasattr(self, "buttons_view"):
+            self.buttons_view.close_drawer()
+        if hasattr(self, "point_scroll_view"):
+            self.point_scroll_view.close_drawer()
+
         self.view_stack.set_visible_child_name(tab_id)
         for tid, btn in self.tab_buttons.items():
             if tid == tab_id:
@@ -280,22 +304,55 @@ class MainWindow(Adw.ApplicationWindow):
 
     def on_apply_clicked(self, btn):
         self.apply_btn.set_sensitive(False)
-        self.apply_btn.set_label("Aplicando...")
+        self.apply_btn.set_label(_("Applying..."))
 
         cfg_str = self.config.generate_config_string()
         success, msg = SystemService.apply_config(cfg_str)
         
         self.apply_btn.set_sensitive(True)
-        self.apply_btn.set_label("Aplicar no Sistema")
+        self.apply_btn.set_label(_("Apply to System"))
 
         if success:
-            toast = Adw.Toast.new("✅ Configurações aplicadas com sucesso no logid!")
+            toast = Adw.Toast.new(_("✅ Settings applied successfully to logid!"))
             toast.set_timeout(3)
             self.toast_overlay.add_toast(toast)
         else:
-            toast = Adw.Toast.new(f"⚠️ Erro ao aplicar: {msg[:60] if msg else 'Cancelado'}")
+            err_text = msg[:60] if msg else _("Cancelled")
+            toast = Adw.Toast.new(_("⚠️ Error applying: {error}").format(error=err_text))
             toast.set_timeout(4)
             self.toast_overlay.add_toast(toast)
 
     def on_drawer_toggled(self, is_open):
-        self.sidebar.set_visible(not is_open)
+        if hasattr(self, "sidebar") and self.sidebar:
+            self.sidebar.set_visible(not is_open)
+        if hasattr(self, "back_nav_btn") and self.back_nav_btn:
+            self.back_nav_btn.set_visible(is_open)
+
+    def update_battery_status(self, user_initiated=False):
+        bat_info = SystemService.get_battery_info()
+        if bat_info.get("connected") and bat_info.get("percentage"):
+            pct = bat_info["percentage"]
+            icon_conn = "⚡" if bat_info.get("is_charging") else "ᛒ"
+            self.bat_lbl.set_label(f"{pct}  🔋  {icon_conn}")
+            self.bat_box.remove_css_class("offline")
+            if bat_info.get("is_charging"):
+                self.bat_box.add_css_class("charging")
+            else:
+                self.bat_box.remove_css_class("charging")
+            self.bat_box.set_tooltip_text(_("Battery: {pct} • State: {st}\nClick to re-scan devices").format(
+                pct=pct, st=bat_info.get("state", "Connected")
+            ))
+            if user_initiated:
+                toast = Adw.Toast.new(_("✅ Mouse detected ({pct})").format(pct=pct))
+                toast.set_timeout(2)
+                self.toast_overlay.add_toast(toast)
+        else:
+            self.bat_lbl.set_label(_("Disconnected 🔴"))
+            self.bat_box.add_css_class("offline")
+            self.bat_box.remove_css_class("charging")
+            self.bat_box.set_tooltip_text(_("Mouse disconnected\nClick to re-scan devices"))
+            if user_initiated:
+                toast = Adw.Toast.new(_("⚠️ Mouse not found. Please check connection."))
+                toast.set_timeout(2)
+                self.toast_overlay.add_toast(toast)
+        return True

@@ -7,6 +7,7 @@ gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
 from gi.repository import Gtk, Adw, Gdk
 
+from ..i18n import _
 from ..backend.keycodes import KEY_MAP, REV_KEY_MAP, format_keys_display
 
 # Mapeamento de Gdk.Keyval para nomes evdev KEY_*
@@ -52,7 +53,7 @@ for i in range(1, 13):
 class ShortcutRecorderDialog(Adw.Window):
     def __init__(self, parent_window, current_keys, on_saved_callback):
         super().__init__(transient_for=parent_window, modal=True)
-        self.set_title("Gravar Atalho de Teclado")
+        self.set_title(_("Record Keyboard Shortcut"))
         self.set_default_size(380, 260)
         self.on_saved_callback = on_saved_callback
         self.recorded_keys = list(current_keys) if current_keys else []
@@ -65,11 +66,11 @@ class ShortcutRecorderDialog(Adw.Window):
         box.set_margin_end(24)
 
         # Título e Instrução
-        title_label = Gtk.Label(label="Pressione a combinação de teclas")
+        title_label = Gtk.Label(label=_("Press key combination"))
         title_label.add_css_class("title-3")
         box.append(title_label)
 
-        sub_label = Gtk.Label(label="Ex: Super + Shift + PageDown ou Ctrl + Alt + T")
+        sub_label = Gtk.Label(label=_("E.g., Super + Shift + PageDown or Ctrl + Alt + T"))
         sub_label.add_css_class("dim-label")
         box.append(sub_label)
 
@@ -90,15 +91,15 @@ class ShortcutRecorderDialog(Adw.Window):
         btn_box.set_halign(Gtk.Align.END)
         btn_box.set_margin_top(12)
 
-        clear_btn = Gtk.Button(label="Limpar")
+        clear_btn = Gtk.Button(label=_("Clear"))
         clear_btn.connect("clicked", self.on_clear)
         btn_box.append(clear_btn)
 
-        cancel_btn = Gtk.Button(label="Cancelar")
+        cancel_btn = Gtk.Button(label=_("Cancel"))
         cancel_btn.connect("clicked", lambda b: self.close())
         btn_box.append(cancel_btn)
 
-        save_btn = Gtk.Button(label="Salvar Atalho")
+        save_btn = Gtk.Button(label=_("Save Shortcut"))
         save_btn.add_css_class("suggested-action")
         save_btn.connect("clicked", self.on_save)
         btn_box.append(save_btn)
@@ -146,7 +147,7 @@ class ShortcutRecorderDialog(Adw.Window):
 
     def on_clear(self, btn):
         self.recorded_keys = []
-        self.key_label.set_label("Nenhuma tecla")
+        self.key_label.set_label(_("None"))
 
     def on_save(self, btn):
         if self.on_saved_callback:

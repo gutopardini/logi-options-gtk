@@ -14,150 +14,154 @@ gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
 from gi.repository import Gtk, Adw, Gdk
 
+from ..i18n import _
 from ..widgets.mouse_canvas import MouseCanvas
 from ..backend.keycodes import format_keys_display
 
-# Dicionário Unificado e Padronizado de "OTHER ACTIONS" (100% Fiel aos Prints)
-UNIFIED_OTHER_ACTIONS = [
-    {"name": "Action center", "keys": ["KEY_LEFTMETA", "KEY_A"], "type": "action"},
-    {"name": "Back", "keys": ["KEY_BACK"], "type": "action"},
-    {"name": "Brightness down", "keys": ["KEY_BRIGHTNESSDOWN"], "type": "action"},
-    {"name": "Brightness up", "keys": ["KEY_BRIGHTNESSUP"], "type": "action"},
-    {"name": "Calculator", "keys": ["KEY_CALC"], "type": "action"},
-    {"name": "Close window", "keys": ["KEY_LEFTALT", "KEY_F4"], "type": "action"},
-    {"name": "Copy", "keys": ["KEY_LEFTCTRL", "KEY_C"], "type": "action"},
-    {"name": "Cut", "keys": ["KEY_LEFTCTRL", "KEY_X"], "type": "action"},
-    {"name": "Desktop left", "keys": ["KEY_LEFTMETA", "KEY_PAGEUP"], "type": "action"},
-    {"name": "Desktop right", "keys": ["KEY_LEFTMETA", "KEY_PAGEDOWN"], "type": "action"},
-    {"name": "Do nothing", "keys": [], "type": "action"},
-    {"name": "Emoji menu", "keys": ["KEY_LEFTMETA", "KEY_DOT"], "type": "action"},
-    {"name": "Forward", "keys": ["KEY_FORWARD"], "type": "action"},
-    {"name": "Input language", "keys": ["KEY_LEFTMETA", "KEY_SPACE"], "type": "action"},
-    {"name": "Lock", "keys": ["KEY_LEFTMETA", "KEY_L"], "type": "action"},
-    {"name": "Maximize window", "keys": ["KEY_LEFTMETA", "KEY_UP"], "type": "action"},
-    {"name": "Minimize window", "keys": ["KEY_LEFTMETA", "KEY_DOWN"], "type": "action"},
-    {"name": "Mute/Unmute speaker", "keys": ["KEY_MUTE"], "type": "action"},
-    {"name": "New browser tab", "keys": ["KEY_LEFTCTRL", "KEY_T"], "type": "action"},
-    {"name": "Next", "keys": ["KEY_NEXTSONG"], "type": "action"},
-    {"name": "Paste", "keys": ["KEY_LEFTCTRL", "KEY_V"], "type": "action"},
-    {"name": "Play/Pause", "keys": ["KEY_PLAYPAUSE"], "type": "action"},
-    {"name": "Previous", "keys": ["KEY_PREVIOUSSONG"], "type": "action"},
-    {"name": "Print screen", "keys": ["KEY_PRINT"], "type": "action"},
-    {"name": "Redo", "keys": ["KEY_LEFTCTRL", "KEY_Y"], "type": "action"},
-    {"name": "Right Ctrl", "keys": ["KEY_RIGHTCTRL"], "type": "action"},
-    {"name": "Screen capture", "keys": ["KEY_LEFTMETA", "KEY_LEFTSHIFT", "KEY_S"], "type": "action"},
-    {"name": "Screen snip", "keys": ["KEY_PRINT"], "type": "action"},
-    {"name": "Shift wheel mode", "keys": [], "type": "toggle_smartshift"},
-    {"name": "Show/hide desktop", "keys": ["KEY_LEFTMETA", "KEY_D"], "type": "action"},
-    {"name": "Switch application", "keys": ["KEY_LEFTALT", "KEY_TAB"], "type": "action"},
-    {"name": "Task view", "keys": ["KEY_LEFTMETA"], "type": "action"},
-    {"name": "Undo", "keys": ["KEY_LEFTCTRL", "KEY_Z"], "type": "action"},
-    {"name": "Volume down", "keys": ["KEY_VOLUMEDOWN"], "type": "action"},
-    {"name": "Volume up", "keys": ["KEY_VOLUMEUP"], "type": "action"},
-    {"name": "Zoom in", "keys": ["KEY_LEFTCTRL", "KEY_EQUAL"], "type": "action"},
-    {"name": "Zoom out", "keys": ["KEY_LEFTCTRL", "KEY_MINUS"], "type": "action"},
-]
 
-GESTURE_PRESETS_MAP = {
-    0: {
-        "name": "Virtual desktops",
-        "up": ["KEY_LEFTMETA"],
-        "down": ["KEY_LEFTMETA", "KEY_D"],
-        "left": ["KEY_LEFTMETA", "KEY_PAGEUP"],
-        "right": ["KEY_LEFTMETA", "KEY_PAGEDOWN"],
-        "rows": [
-            ("← HOLD + MOVE LEFT", "Desktop left"),
-            ("→ HOLD + MOVE RIGHT", "Desktop right"),
-            ("↑ HOLD + MOVE UP", "Start menu"),
-            ("↓ HOLD + MOVE DOWN", "Show/hide desktop"),
-            ("○ CLICK", "Task view"),
-        ]
-    },
-    1: {
-        "name": "Media controls",
-        "up": ["KEY_VOLUMEUP"],
-        "down": ["KEY_VOLUMEDOWN"],
-        "left": ["KEY_PREVIOUSSONG"],
-        "right": ["KEY_NEXTSONG"],
-        "rows": [
-            ("← HOLD + MOVE LEFT", "Previous"),
-            ("→ HOLD + MOVE RIGHT", "Next"),
-            ("↑ HOLD + MOVE UP", "Volume up"),
-            ("↓ HOLD + MOVE DOWN", "Volume down"),
-            ("○ CLICK", "Play/Pause"),
-        ]
-    },
-    2: {
-        "name": "Windows management",
-        "up": ["KEY_LEFTMETA", "KEY_UP"],
-        "down": ["KEY_LEFTMETA", "KEY_D"],
-        "left": ["KEY_LEFTMETA", "KEY_LEFT"],
-        "right": ["KEY_LEFTMETA", "KEY_RIGHT"],
-        "rows": [
-            ("← HOLD + MOVE LEFT", "Snap left"),
-            ("→ HOLD + MOVE RIGHT", "Snap right"),
-            ("↑ HOLD + MOVE UP", "Maximize window"),
-            ("↓ HOLD + MOVE DOWN", "Show/hide desktop"),
-            ("○ CLICK", "Switch application"),
-        ]
-    },
-    3: {
-        "name": "App navigation",
-        "up": ["KEY_LEFTMETA"],
-        "down": ["KEY_LEFTMETA", "KEY_D"],
-        "left": ["KEY_LEFTALT", "KEY_LEFTSHIFT", "KEY_TAB"],
-        "right": ["KEY_LEFTALT", "KEY_TAB"],
-        "rows": [
-            ("← HOLD + MOVE LEFT", "Switch application"),
-            ("→ HOLD + MOVE RIGHT", "Switch application"),
-            ("↑ HOLD + MOVE UP", "Start menu"),
-            ("↓ HOLD + MOVE DOWN", "Show/hide desktop"),
-            ("○ CLICK", "Switch application"),
-        ]
-    },
-    4: {
-        "name": "Pan",
-        "up": ["KEY_UP"],
-        "down": ["KEY_DOWN"],
-        "left": ["KEY_LEFT"],
-        "right": ["KEY_RIGHT"],
-        "rows": [
-            ("← HOLD + MOVE LEFT", "Pan left"),
-            ("→ HOLD + MOVE RIGHT", "Pan right"),
-            ("↑ HOLD + MOVE UP", "Pan up"),
-            ("↓ HOLD + MOVE DOWN", "Pan down"),
-            ("○ CLICK", "Middle button"),
-        ]
-    },
-    5: {
-        "name": "Arrange windows",
-        "up": ["KEY_LEFTMETA", "KEY_UP"],
-        "down": ["KEY_LEFTMETA", "KEY_DOWN"],
-        "left": ["KEY_LEFTMETA", "KEY_LEFT"],
-        "right": ["KEY_LEFTMETA", "KEY_RIGHT"],
-        "rows": [
-            ("← HOLD + MOVE LEFT", "Snap left"),
-            ("→ HOLD + MOVE RIGHT", "Snap right"),
-            ("↑ HOLD + MOVE UP", "Maximize window"),
-            ("↓ HOLD + MOVE DOWN", "Minimize window"),
-            ("○ CLICK", "Switch application"),
-        ]
-    },
-    6: {
-        "name": "Custom",
-        "up": [],
-        "down": [],
-        "left": [],
-        "right": [],
-        "rows": [
-            ("← HOLD + MOVE LEFT", "Do nothing"),
-            ("→ HOLD + MOVE RIGHT", "Do nothing"),
-            ("↑ HOLD + MOVE UP", "Do nothing"),
-            ("↓ HOLD + MOVE DOWN", "Do nothing"),
-            ("○ CLICK", "Do nothing"),
-        ]
+def get_unified_other_actions():
+    return [
+        {"name": _("Action center"), "keys": ["KEY_LEFTMETA", "KEY_A"], "type": "action"},
+        {"name": _("Back"), "keys": ["KEY_BACK"], "type": "action"},
+        {"name": _("Brightness down"), "keys": ["KEY_BRIGHTNESSDOWN"], "type": "action"},
+        {"name": _("Brightness up"), "keys": ["KEY_BRIGHTNESSUP"], "type": "action"},
+        {"name": _("Calculator"), "keys": ["KEY_CALC"], "type": "action"},
+        {"name": _("Close window"), "keys": ["KEY_LEFTALT", "KEY_F4"], "type": "action"},
+        {"name": _("Copy"), "keys": ["KEY_LEFTCTRL", "KEY_C"], "type": "action"},
+        {"name": _("Cut"), "keys": ["KEY_LEFTCTRL", "KEY_X"], "type": "action"},
+        {"name": _("Desktop left"), "keys": ["KEY_LEFTMETA", "KEY_PAGEUP"], "type": "action"},
+        {"name": _("Desktop right"), "keys": ["KEY_LEFTMETA", "KEY_PAGEDOWN"], "type": "action"},
+        {"name": _("Do nothing"), "keys": [], "type": "action"},
+        {"name": _("Emoji menu"), "keys": ["KEY_LEFTMETA", "KEY_DOT"], "type": "action"},
+        {"name": _("Forward"), "keys": ["KEY_FORWARD"], "type": "action"},
+        {"name": _("Input language"), "keys": ["KEY_LEFTMETA", "KEY_SPACE"], "type": "action"},
+        {"name": _("Lock"), "keys": ["KEY_LEFTMETA", "KEY_L"], "type": "action"},
+        {"name": _("Maximize window"), "keys": ["KEY_LEFTMETA", "KEY_UP"], "type": "action"},
+        {"name": _("Minimize window"), "keys": ["KEY_LEFTMETA", "KEY_DOWN"], "type": "action"},
+        {"name": _("Mute/Unmute speaker"), "keys": ["KEY_MUTE"], "type": "action"},
+        {"name": _("New browser tab"), "keys": ["KEY_LEFTCTRL", "KEY_T"], "type": "action"},
+        {"name": _("Next"), "keys": ["KEY_NEXTSONG"], "type": "action"},
+        {"name": _("Paste"), "keys": ["KEY_LEFTCTRL", "KEY_V"], "type": "action"},
+        {"name": _("Play/Pause"), "keys": ["KEY_PLAYPAUSE"], "type": "action"},
+        {"name": _("Previous"), "keys": ["KEY_PREVIOUSSONG"], "type": "action"},
+        {"name": _("Print screen"), "keys": ["KEY_PRINT"], "type": "action"},
+        {"name": _("Redo"), "keys": ["KEY_LEFTCTRL", "KEY_Y"], "type": "action"},
+        {"name": _("Right Ctrl"), "keys": ["KEY_RIGHTCTRL"], "type": "action"},
+        {"name": _("Screen capture"), "keys": ["KEY_LEFTMETA", "KEY_LEFTSHIFT", "KEY_S"], "type": "action"},
+        {"name": _("Screen snip"), "keys": ["KEY_PRINT"], "type": "action"},
+        {"name": _("Shift wheel mode"), "keys": [], "type": "toggle_smartshift"},
+        {"name": _("Show/hide desktop"), "keys": ["KEY_LEFTMETA", "KEY_D"], "type": "action"},
+        {"name": _("Switch application"), "keys": ["KEY_LEFTALT", "KEY_TAB"], "type": "action"},
+        {"name": _("Task view"), "keys": ["KEY_LEFTMETA"], "type": "action"},
+        {"name": _("Undo"), "keys": ["KEY_LEFTCTRL", "KEY_Z"], "type": "action"},
+        {"name": _("Volume down"), "keys": ["KEY_VOLUMEDOWN"], "type": "action"},
+        {"name": _("Volume up"), "keys": ["KEY_VOLUMEUP"], "type": "action"},
+        {"name": _("Zoom in"), "keys": ["KEY_LEFTCTRL", "KEY_EQUAL"], "type": "action"},
+        {"name": _("Zoom out"), "keys": ["KEY_LEFTCTRL", "KEY_MINUS"], "type": "action"},
+    ]
+
+
+def get_gesture_presets_map():
+    return {
+        0: {
+            "name": _("Virtual desktops"),
+            "up": ["KEY_LEFTMETA"],
+            "down": ["KEY_LEFTMETA", "KEY_D"],
+            "left": ["KEY_LEFTMETA", "KEY_PAGEUP"],
+            "right": ["KEY_LEFTMETA", "KEY_PAGEDOWN"],
+            "rows": [
+                (_("← HOLD + MOVE LEFT"), _("Desktop left")),
+                (_("→ HOLD + MOVE RIGHT"), _("Desktop right")),
+                (_("↑ HOLD + MOVE UP"), _("Start menu")),
+                (_("↓ HOLD + MOVE DOWN"), _("Show/hide desktop")),
+                (_("○ CLICK"), _("Task view")),
+            ]
+        },
+        1: {
+            "name": _("Media controls"),
+            "up": ["KEY_VOLUMEUP"],
+            "down": ["KEY_VOLUMEDOWN"],
+            "left": ["KEY_PREVIOUSSONG"],
+            "right": ["KEY_NEXTSONG"],
+            "rows": [
+                (_("← HOLD + MOVE LEFT"), _("Previous")),
+                (_("→ HOLD + MOVE RIGHT"), _("Next")),
+                (_("↑ HOLD + MOVE UP"), _("Volume up")),
+                (_("↓ HOLD + MOVE DOWN"), _("Volume down")),
+                (_("○ CLICK"), _("Play/Pause")),
+            ]
+        },
+        2: {
+            "name": _("Windows management"),
+            "up": ["KEY_LEFTMETA", "KEY_UP"],
+            "down": ["KEY_LEFTMETA", "KEY_D"],
+            "left": ["KEY_LEFTMETA", "KEY_LEFT"],
+            "right": ["KEY_LEFTMETA", "KEY_RIGHT"],
+            "rows": [
+                (_("← HOLD + MOVE LEFT"), _("Snap left")),
+                (_("→ HOLD + MOVE RIGHT"), _("Snap right")),
+                (_("↑ HOLD + MOVE UP"), _("Maximize window")),
+                (_("↓ HOLD + MOVE DOWN"), _("Show/hide desktop")),
+                (_("○ CLICK"), _("Switch application")),
+            ]
+        },
+        3: {
+            "name": _("App navigation"),
+            "up": ["KEY_LEFTMETA"],
+            "down": ["KEY_LEFTMETA", "KEY_D"],
+            "left": ["KEY_LEFTALT", "KEY_LEFTSHIFT", "KEY_TAB"],
+            "right": ["KEY_LEFTALT", "KEY_TAB"],
+            "rows": [
+                (_("← HOLD + MOVE LEFT"), _("Switch application")),
+                (_("→ HOLD + MOVE RIGHT"), _("Switch application")),
+                (_("↑ HOLD + MOVE UP"), _("Start menu")),
+                (_("↓ HOLD + MOVE DOWN"), _("Show/hide desktop")),
+                (_("○ CLICK"), _("Switch application")),
+            ]
+        },
+        4: {
+            "name": _("Pan"),
+            "up": ["KEY_UP"],
+            "down": ["KEY_DOWN"],
+            "left": ["KEY_LEFT"],
+            "right": ["KEY_RIGHT"],
+            "rows": [
+                (_("← HOLD + MOVE LEFT"), _("Pan left")),
+                (_("→ HOLD + MOVE RIGHT"), _("Pan right")),
+                (_("↑ HOLD + MOVE UP"), _("Pan up")),
+                (_("↓ HOLD + MOVE DOWN"), _("Pan down")),
+                (_("○ CLICK"), _("Middle button")),
+            ]
+        },
+        5: {
+            "name": _("Arrange windows"),
+            "up": ["KEY_LEFTMETA", "KEY_UP"],
+            "down": ["KEY_LEFTMETA", "KEY_DOWN"],
+            "left": ["KEY_LEFTMETA", "KEY_LEFT"],
+            "right": ["KEY_LEFTMETA", "KEY_RIGHT"],
+            "rows": [
+                (_("← HOLD + MOVE LEFT"), _("Snap left")),
+                (_("→ HOLD + MOVE RIGHT"), _("Snap right")),
+                (_("↑ HOLD + MOVE UP"), _("Maximize window")),
+                (_("↓ HOLD + MOVE DOWN"), _("Minimize window")),
+                (_("○ CLICK"), _("Switch application")),
+            ]
+        },
+        6: {
+            "name": _("Custom"),
+            "up": [],
+            "down": [],
+            "left": [],
+            "right": [],
+            "rows": [
+                (_("← HOLD + MOVE LEFT"), _("Do nothing")),
+                (_("→ HOLD + MOVE RIGHT"), _("Do nothing")),
+                (_("↑ HOLD + MOVE UP"), _("Do nothing")),
+                (_("↓ HOLD + MOVE DOWN"), _("Do nothing")),
+                (_("○ CLICK"), _("Do nothing")),
+            ]
+        }
     }
-}
 
 
 class ButtonsView(Gtk.Box):
@@ -190,7 +194,7 @@ class ButtonsView(Gtk.Box):
 
         # Header do Drawer com Título e Botão Fechar
         d_header = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        self.drawer_title = Gtk.Label(label="Actions")
+        self.drawer_title = Gtk.Label(label=_("Actions"))
         self.drawer_title.add_css_class("drawer-title")
         self.drawer_title.set_halign(Gtk.Align.START)
         d_header.append(self.drawer_title)
@@ -201,7 +205,7 @@ class ButtonsView(Gtk.Box):
 
         close_d_btn = Gtk.Button(label="✕")
         close_d_btn.add_css_class("close-nav-btn")
-        close_d_btn.set_tooltip_text("Fechar e voltar à visão geral")
+        close_d_btn.set_tooltip_text(_("Close and return to overview"))
         close_d_btn.connect("clicked", lambda b: self.close_drawer())
         d_header.append(close_d_btn)
         self.drawer_box.append(d_header)
@@ -209,7 +213,7 @@ class ButtonsView(Gtk.Box):
         # Campo de Busca Oficial
         self.search_entry = Gtk.SearchEntry()
         self.search_entry.add_css_class("official-search-entry")
-        self.search_entry.set_placeholder_text("Search")
+        self.search_entry.set_placeholder_text(_("Search"))
         self.search_entry.connect("search-changed", self.on_search_changed)
         self.drawer_box.append(self.search_entry)
 
@@ -267,7 +271,7 @@ class ButtonsView(Gtk.Box):
         # -------------------------------------------------------------
         # 1. Seção: RECOMMENDED (Oficial dos Prints para cada botão)
         # -------------------------------------------------------------
-        cat_lbl = Gtk.Label(label="RECOMMENDED")
+        cat_lbl = Gtk.Label(label=_("RECOMMENDED"))
         cat_lbl.add_css_class("category-header-label")
         cat_lbl.set_halign(Gtk.Align.START)
         self.content_container.append(cat_lbl)
@@ -276,56 +280,56 @@ class ButtonsView(Gtk.Box):
 
         if self.current_pin == "thumbwheel":
             recommended_items = [
-                {"name": "Horizontal scroll", "keys": [], "type": "thumb_default"},
-                {"name": "Zoom in/out", "keys": ["KEY_LEFTCTRL", "KEY_EQUAL"], "type": "thumb_zoom"},
-                {"name": "Volume up/down", "keys": ["KEY_VOLUMEUP"], "type": "thumb_volume"},
-                {"name": "Navigate between tabs", "keys": ["KEY_LEFTCTRL", "KEY_PAGEDOWN"], "type": "thumb_tabs"},
-                {"name": "Keyboard shortcut", "keys": None, "type": "thumb_shortcut"},
+                {"name": _("Horizontal scroll"), "keys": [], "type": "thumb_default"},
+                {"name": _("Zoom in/out"), "keys": ["KEY_LEFTCTRL", "KEY_EQUAL"], "type": "thumb_zoom"},
+                {"name": _("Volume up/down"), "keys": ["KEY_VOLUMEUP"], "type": "thumb_volume"},
+                {"name": _("Navigate between tabs"), "keys": ["KEY_LEFTCTRL", "KEY_PAGEDOWN"], "type": "thumb_tabs"},
+                {"name": _("Keyboard shortcut"), "keys": None, "type": "thumb_shortcut"},
             ]
         elif self.current_pin == "btn_middle":
             recommended_items = [
-                {"name": "Middle button", "keys": [], "type": "middle_default"},
-                {"name": "Shift wheel mode", "keys": [], "type": "toggle_smartshift"},
-                {"name": "Task view", "keys": ["KEY_LEFTMETA"], "type": "action"},
-                {"name": "Show/hide desktop", "keys": ["KEY_LEFTMETA", "KEY_D"], "type": "action"},
-                {"name": "Gestures", "keys": None, "type": "gestures"},
-                {"name": "Keyboard shortcut", "keys": None, "type": "single_shortcut"},
+                {"name": _("Middle button"), "keys": [], "type": "middle_default"},
+                {"name": _("Shift wheel mode"), "keys": [], "type": "toggle_smartshift"},
+                {"name": _("Task view"), "keys": ["KEY_LEFTMETA"], "type": "action"},
+                {"name": _("Show/hide desktop"), "keys": ["KEY_LEFTMETA", "KEY_D"], "type": "action"},
+                {"name": _("Gestures"), "keys": None, "type": "gestures"},
+                {"name": _("Keyboard shortcut"), "keys": None, "type": "single_shortcut"},
             ]
         elif self.current_pin == "btn_top":
             recommended_items = [
-                {"name": "Shift wheel mode", "keys": [], "type": "toggle_smartshift"},
-                {"name": "Task view", "keys": ["KEY_LEFTMETA"], "type": "action"},
-                {"name": "Middle button", "keys": ["BTN_MIDDLE"], "type": "action"},
-                {"name": "Gestures", "keys": None, "type": "gestures"},
-                {"name": "Screen capture", "keys": ["KEY_LEFTMETA", "KEY_LEFTSHIFT", "KEY_S"], "type": "action"},
-                {"name": "Print screen", "keys": ["KEY_PRINT"], "type": "action"},
-                {"name": "Keyboard shortcut", "keys": None, "type": "single_shortcut"},
+                {"name": _("Shift wheel mode"), "keys": [], "type": "toggle_smartshift"},
+                {"name": _("Task view"), "keys": ["KEY_LEFTMETA"], "type": "action"},
+                {"name": _("Middle button"), "keys": ["BTN_MIDDLE"], "type": "action"},
+                {"name": _("Gestures"), "keys": None, "type": "gestures"},
+                {"name": _("Screen capture"), "keys": ["KEY_LEFTMETA", "KEY_LEFTSHIFT", "KEY_S"], "type": "action"},
+                {"name": _("Print screen"), "keys": ["KEY_PRINT"], "type": "action"},
+                {"name": _("Keyboard shortcut"), "keys": None, "type": "single_shortcut"},
             ]
         elif self.current_pin == "btn_forward":
             recommended_items = [
-                {"name": "Forward", "keys": ["KEY_FORWARD"], "type": "action"},
-                {"name": "Paste", "keys": ["KEY_LEFTCTRL", "KEY_V"], "type": "action"},
-                {"name": "Volume up", "keys": ["KEY_VOLUMEUP"], "type": "action"},
-                {"name": "Redo", "keys": ["KEY_LEFTCTRL", "KEY_Y"], "type": "action"},
-                {"name": "Keyboard shortcut", "keys": None, "type": "single_shortcut"},
+                {"name": _("Forward"), "keys": ["KEY_FORWARD"], "type": "action"},
+                {"name": _("Paste"), "keys": ["KEY_LEFTCTRL", "KEY_V"], "type": "action"},
+                {"name": _("Volume up"), "keys": ["KEY_VOLUMEUP"], "type": "action"},
+                {"name": _("Redo"), "keys": ["KEY_LEFTCTRL", "KEY_Y"], "type": "action"},
+                {"name": _("Keyboard shortcut"), "keys": None, "type": "single_shortcut"},
             ]
         elif self.current_pin == "btn_back":
             recommended_items = [
-                {"name": "Back", "keys": ["KEY_BACK"], "type": "action"},
-                {"name": "Copy", "keys": ["KEY_LEFTCTRL", "KEY_C"], "type": "action"},
-                {"name": "Volume down", "keys": ["KEY_VOLUMEDOWN"], "type": "action"},
-                {"name": "Undo", "keys": ["KEY_LEFTCTRL", "KEY_Z"], "type": "action"},
-                {"name": "Keyboard shortcut", "keys": None, "type": "single_shortcut"},
+                {"name": _("Back"), "keys": ["KEY_BACK"], "type": "action"},
+                {"name": _("Copy"), "keys": ["KEY_LEFTCTRL", "KEY_C"], "type": "action"},
+                {"name": _("Volume down"), "keys": ["KEY_VOLUMEDOWN"], "type": "action"},
+                {"name": _("Undo"), "keys": ["KEY_LEFTCTRL", "KEY_Z"], "type": "action"},
+                {"name": _("Keyboard shortcut"), "keys": None, "type": "single_shortcut"},
             ]
         elif self.current_pin == "btn_gesture":
             recommended_items = [
-                {"name": "Gestures", "keys": None, "type": "gestures"},
-                {"name": "Task view", "keys": ["KEY_LEFTMETA"], "type": "action"},
-                {"name": "Show/hide desktop", "keys": ["KEY_LEFTMETA", "KEY_D"], "type": "action"},
-                {"name": "Screen capture", "keys": ["KEY_LEFTMETA", "KEY_LEFTSHIFT", "KEY_S"], "type": "action"},
-                {"name": "Print screen", "keys": ["KEY_PRINT"], "type": "action"},
-                {"name": "Switch application", "keys": ["KEY_LEFTALT", "KEY_TAB"], "type": "action"},
-                {"name": "Keyboard shortcut", "keys": None, "type": "single_shortcut"},
+                {"name": _("Gestures"), "keys": None, "type": "gestures"},
+                {"name": _("Task view"), "keys": ["KEY_LEFTMETA"], "type": "action"},
+                {"name": _("Show/hide desktop"), "keys": ["KEY_LEFTMETA", "KEY_D"], "type": "action"},
+                {"name": _("Screen capture"), "keys": ["KEY_LEFTMETA", "KEY_LEFTSHIFT", "KEY_S"], "type": "action"},
+                {"name": _("Print screen"), "keys": ["KEY_PRINT"], "type": "action"},
+                {"name": _("Switch application"), "keys": ["KEY_LEFTALT", "KEY_TAB"], "type": "action"},
+                {"name": _("Keyboard shortcut"), "keys": None, "type": "single_shortcut"},
             ]
 
         for item in recommended_items:
@@ -340,7 +344,7 @@ class ButtonsView(Gtk.Box):
         accordion_btn.add_css_class("accordion-header-btn")
 
         acc_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        acc_lbl = Gtk.Label(label="OTHER ACTIONS")
+        acc_lbl = Gtk.Label(label=_("OTHER ACTIONS"))
         acc_lbl.add_css_class("accordion-header-title")
         acc_lbl.set_halign(Gtk.Align.START)
         acc_box.append(acc_lbl)
@@ -359,7 +363,7 @@ class ButtonsView(Gtk.Box):
         self.content_container.append(accordion_btn)
 
         if is_expanded:
-            for item in UNIFIED_OTHER_ACTIONS:
+            for item in get_unified_other_actions():
                 if self.search_filter and self.search_filter not in item["name"].lower():
                     continue
                 self.append_action_row(item)
@@ -443,14 +447,14 @@ class ButtonsView(Gtk.Box):
         card = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         card.add_css_class("shortcut-config-box")
 
-        desc = Gtk.Label(label="Press key combination to assign shortcut\n(Eg. 'Ctrl + C' for Copy)")
+        desc = Gtk.Label(label=_("Press key combination to assign shortcut\n(Eg. 'Ctrl + C' for Copy)"))
         desc.add_css_class("callout-sub")
         desc.set_wrap(True)
         desc.set_halign(Gtk.Align.START)
         card.append(desc)
 
         # 1. SCROLL UP
-        lbl_up = Gtk.Label(label="SCROLL UP")
+        lbl_up = Gtk.Label(label=_("SCROLL UP"))
         lbl_up.add_css_class("category-header-label")
         lbl_up.set_halign(Gtk.Align.START)
         card.append(lbl_up)
@@ -459,7 +463,7 @@ class ButtonsView(Gtk.Box):
         self.up_btn.add_css_class("key-recorder-box")
         up_text = format_keys_display(self.config.thumbwheel_left_keys)
         if up_text == "None":
-            up_text = "Press key combination"
+            up_text = _("Press key combination")
         
         self.up_lbl = Gtk.Label(label=up_text)
         self.up_lbl.set_halign(Gtk.Align.START)
@@ -467,13 +471,13 @@ class ButtonsView(Gtk.Box):
 
         if self.active_recording_target == "scroll_up":
             self.up_btn.add_css_class("recording-active")
-            self.up_lbl.set_label("⌨️ Digite a combinação no teclado...")
+            self.up_lbl.set_label(_("⌨️ Type shortcut on keyboard..."))
         
         self.up_btn.connect("clicked", lambda b: self.start_recording("scroll_up"))
         card.append(self.up_btn)
 
         # 2. SCROLL DOWN
-        lbl_down = Gtk.Label(label="SCROLL DOWN")
+        lbl_down = Gtk.Label(label=_("SCROLL DOWN"))
         lbl_down.add_css_class("category-header-label")
         lbl_down.set_halign(Gtk.Align.START)
         card.append(lbl_down)
@@ -482,7 +486,7 @@ class ButtonsView(Gtk.Box):
         self.down_btn.add_css_class("key-recorder-box")
         down_text = format_keys_display(self.config.thumbwheel_right_keys)
         if down_text == "None":
-            down_text = "Press key combination"
+            down_text = _("Press key combination")
 
         self.down_lbl = Gtk.Label(label=down_text)
         self.down_lbl.set_halign(Gtk.Align.START)
@@ -490,7 +494,7 @@ class ButtonsView(Gtk.Box):
 
         if self.active_recording_target == "scroll_down":
             self.down_btn.add_css_class("recording-active")
-            self.down_lbl.set_label("⌨️ Digite a combinação no teclado...")
+            self.down_lbl.set_label(_("⌨️ Type shortcut on keyboard..."))
 
         self.down_btn.connect("clicked", lambda b: self.start_recording("scroll_down"))
         card.append(self.down_btn)
@@ -501,13 +505,13 @@ class ButtonsView(Gtk.Box):
         card = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         card.add_css_class("shortcut-config-box")
 
-        desc = Gtk.Label(label="Press key combination to assign shortcut\n(Eg. 'Ctrl + C' for Copy)")
+        desc = Gtk.Label(label=_("Press key combination to assign shortcut\n(Eg. 'Ctrl + C' for Copy)"))
         desc.add_css_class("callout-sub")
         desc.set_wrap(True)
         desc.set_halign(Gtk.Align.START)
         card.append(desc)
 
-        lbl_s = Gtk.Label(label="SHORTCUT")
+        lbl_s = Gtk.Label(label=_("SHORTCUT"))
         lbl_s.add_css_class("category-header-label")
         lbl_s.set_halign(Gtk.Align.START)
         card.append(lbl_s)
@@ -517,7 +521,7 @@ class ButtonsView(Gtk.Box):
         cur_keys = self.get_current_pin_keys()
         txt = format_keys_display(cur_keys)
         if txt == "None":
-            txt = "Press key combination"
+            txt = _("Press key combination")
 
         self.single_lbl = Gtk.Label(label=txt)
         self.single_lbl.set_halign(Gtk.Align.START)
@@ -525,7 +529,7 @@ class ButtonsView(Gtk.Box):
 
         if self.active_recording_target == "single_key":
             self.single_key_btn.add_css_class("recording-active")
-            self.single_lbl.set_label("⌨️ Digite a combinação no teclado...")
+            self.single_lbl.set_label(_("⌨️ Type shortcut on keyboard..."))
 
         self.single_key_btn.connect("clicked", lambda b: self.start_recording("single_key"))
         card.append(self.single_key_btn)
@@ -540,20 +544,13 @@ class ButtonsView(Gtk.Box):
         g_card = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         g_card.add_css_class("gestures-config-box")
 
-        title = Gtk.Label(label="Choose a preset or select custom to create your own.")
+        title = Gtk.Label(label=_("Choose a preset or select custom to create your own."))
         title.add_css_class("callout-sub")
         title.set_halign(Gtk.Align.START)
         g_card.append(title)
 
-        preset_names = [
-            "Virtual desktops",
-            "Media controls",
-            "Windows management",
-            "App navigation",
-            "Pan",
-            "Arrange windows",
-            "Custom"
-        ]
+        presets_map = get_gesture_presets_map()
+        preset_names = [presets_map[i]["name"] for i in range(len(presets_map))]
         preset_model = Gtk.StringList.new(preset_names)
         preset_combo = Gtk.DropDown.new(preset_model, None)
         preset_combo.set_selected(self.gesture_preset_index)
@@ -561,7 +558,7 @@ class ButtonsView(Gtk.Box):
         g_card.append(preset_combo)
 
         # Recupera as 5 linhas do preset ativo
-        preset_info = GESTURE_PRESETS_MAP.get(self.gesture_preset_index, GESTURE_PRESETS_MAP[0])
+        preset_info = presets_map.get(self.gesture_preset_index, presets_map[0])
         gestures_rows = preset_info["rows"]
 
         for arrow_text, act_text in gestures_rows:
@@ -586,7 +583,8 @@ class ButtonsView(Gtk.Box):
         sel = combo.get_selected()
         self.gesture_preset_index = sel
         self.config.gesture_mode = "gestures"
-        preset = GESTURE_PRESETS_MAP.get(sel, GESTURE_PRESETS_MAP[0])
+        presets_map = get_gesture_presets_map()
+        preset = presets_map.get(sel, presets_map[0])
 
         self.config.gesture_up_keys = preset["up"]
         self.config.gesture_down_keys = preset["down"]

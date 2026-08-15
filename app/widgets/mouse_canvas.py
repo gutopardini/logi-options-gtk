@@ -1,6 +1,7 @@
 """
 Canvas do MX Master 3S Oficial (1:1 com Logi Options+)
 Render 3D em perspectiva, anéis de alvo circulares e callouts com ativação ciano
+Suporta modo 'buttons' (6 pins de botões) e modo 'point_scroll' (3 pins: scroll, thumb, pointer).
 """
 
 import os
@@ -13,6 +14,7 @@ gi.require_version('Gtk', '4.0')
 gi.require_version('GdkPixbuf', '2.0')
 from gi.repository import Gtk, Gdk, GObject, GdkPixbuf
 
+from ..i18n import _
 from ..backend.keycodes import format_keys_display
 
 
@@ -21,9 +23,10 @@ class MouseCanvas(Gtk.Overlay):
         'pin-selected': (GObject.SignalFlags.RUN_FIRST, None, (str,)),
     }
 
-    def __init__(self, config_manager=None):
+    def __init__(self, config_manager=None, mode="buttons"):
         super().__init__()
         self.config = config_manager
+        self.mode = mode
         self.add_css_class("mouse-container")
         self.set_size_request(680, 560)
         self.set_hexpand(True)
@@ -48,45 +51,67 @@ class MouseCanvas(Gtk.Overlay):
         self.drawing_area.set_draw_func(self.on_draw)
         self.set_child(self.drawing_area)
 
-        # Definição dos 6 Callouts Oficiais
-        self.pins_def = {
-            "btn_middle": {
-                "title": "Middle button",
-                "default_sub": "Wheel button",
-                "rx": 0.36, "ry": 0.22,
-                "tag_dx": 130, "tag_dy": -125
-            },
-            "btn_top": {
-                "title": "Shift wheel mode",
-                "default_sub": "Top button",
-                "rx": 0.48, "ry": 0.29,
-                "tag_dx": 135, "tag_dy": -55
-            },
-            "thumbwheel": {
-                "title": "Horizontal scroll",
-                "default_sub": "Thumb wheel",
-                "rx": 0.36, "ry": 0.47,
-                "tag_dx": 135, "tag_dy": 20
-            },
-            "btn_forward": {
-                "title": "Forward",
-                "default_sub": "Forward button",
-                "rx": 0.32, "ry": 0.51,
-                "tag_dx": -230, "tag_dy": -25
-            },
-            "btn_back": {
-                "title": "Back",
-                "default_sub": "Back button",
-                "rx": 0.39, "ry": 0.55,
-                "tag_dx": 20, "tag_dy": 110
-            },
-            "btn_gesture": {
-                "title": "Gestures",
-                "default_sub": "Virtual desktops\nThumb button",
-                "rx": 0.32, "ry": 0.73,
-                "tag_dx": -240, "tag_dy": 50
-            },
-        }
+        # Definições de Callouts baseadas no modo
+        if self.mode == "point_scroll":
+            self.pins_def = {
+                "scroll_wheel": {
+                    "title": _("Scroll wheel"),
+                    "default_sub": f"{_('Scroll direction')}: {_('Standard')}\n{_('Smooth scrolling')}: Off\nSmartShift: On",
+                    "rx": 0.36, "ry": 0.22,
+                    "tag_dx": 135, "tag_dy": -125
+                },
+                "thumb_wheel": {
+                    "title": _("Thumb wheel"),
+                    "default_sub": f"{_('Speed')}: 50%\n{_('Scroll direction')}: {_('Default')}",
+                    "rx": 0.36, "ry": 0.47,
+                    "tag_dx": -240, "tag_dy": 15
+                },
+                "pointer_speed": {
+                    "title": _("Pointer speed"),
+                    "default_sub": f"{_('Speed')}: 50%",
+                    "rx": 0.48, "ry": 0.38,
+                    "tag_dx": 135, "tag_dy": 25
+                }
+            }
+        else:
+            self.pins_def = {
+                "btn_middle": {
+                    "title": _("Middle button"),
+                    "default_sub": _("Wheel button"),
+                    "rx": 0.36, "ry": 0.22,
+                    "tag_dx": 130, "tag_dy": -125
+                },
+                "btn_top": {
+                    "title": _("Shift wheel mode"),
+                    "default_sub": _("Top button"),
+                    "rx": 0.48, "ry": 0.29,
+                    "tag_dx": 135, "tag_dy": -55
+                },
+                "thumbwheel": {
+                    "title": _("Horizontal scroll"),
+                    "default_sub": _("Thumb wheel"),
+                    "rx": 0.36, "ry": 0.47,
+                    "tag_dx": 135, "tag_dy": 20
+                },
+                "btn_forward": {
+                    "title": _("Forward"),
+                    "default_sub": _("Forward button"),
+                    "rx": 0.32, "ry": 0.51,
+                    "tag_dx": -230, "tag_dy": -25
+                },
+                "btn_back": {
+                    "title": _("Back"),
+                    "default_sub": _("Back button"),
+                    "rx": 0.39, "ry": 0.55,
+                    "tag_dx": 20, "tag_dy": 110
+                },
+                "btn_gesture": {
+                    "title": _("Gestures"),
+                    "default_sub": f"{_('Virtual desktops')}\n{_('Thumb button')}",
+                    "rx": 0.32, "ry": 0.73,
+                    "tag_dx": -240, "tag_dy": 50
+                },
+            }
 
         # Layout Fixo para os botões de Callout
         self.fixed = Gtk.Fixed()
@@ -124,99 +149,131 @@ class MouseCanvas(Gtk.Overlay):
     def update_subtitles(self):
         if not self.config:
             return
-        
+
+        if self.mode == "point_scroll":
+            # 1. Scroll wheel
+            if "scroll_wheel" in self.callout_widgets:
+                direction_str = _("Inverted") if self.config.hiresscroll_invert else _("Standard")
+                smooth_str = "On" if self.config.hiresscroll_hires else "Off"
+                smart_str = "On" if self.config.smartshift_on else "Off"
+                self.callout_widgets["scroll_wheel"]["title_lbl"].set_label(_("Scroll wheel"))
+                self.callout_widgets["scroll_wheel"]["sub_lbl"].set_label(
+                    f"{_('Scroll direction')}: {direction_str}\n{_('Smooth scrolling')}: {smooth_str}\nSmartShift: {smart_str}"
+                )
+
+            # 2. Thumb wheel
+            if "thumb_wheel" in self.callout_widgets:
+                tdir_str = _("Inverted") if self.config.thumbwheel_invert else _("Default")
+                tspeed_pct = int(round(100 - (self.config.thumbwheel_left_interval - 1) / 14.0 * 90))
+                tspeed_pct = max(10, min(100, tspeed_pct))
+                self.callout_widgets["thumb_wheel"]["title_lbl"].set_label(_("Thumb wheel"))
+                self.callout_widgets["thumb_wheel"]["sub_lbl"].set_label(
+                    f"{_('Speed')}: {tspeed_pct}%\n{_('Scroll direction')}: {tdir_str}"
+                )
+
+            # 3. Pointer speed
+            if "pointer_speed" in self.callout_widgets:
+                dpi_pct = int(round(self.config.dpi / 8000.0 * 100))
+                dpi_pct = max(5, min(100, dpi_pct))
+                self.callout_widgets["pointer_speed"]["title_lbl"].set_label(_("Pointer speed"))
+                self.callout_widgets["pointer_speed"]["sub_lbl"].set_label(
+                    f"{_('Speed')}: {dpi_pct}%"
+                )
+            return
+
+        # Modo Buttons (Padrão)
         # Middle (Wheel button)
         if "btn_middle" in self.callout_widgets:
             if self.config.btn_middle_action == "ToggleSmartShift":
-                self.callout_widgets["btn_middle"]["title_lbl"].set_label("Shift wheel mode")
+                self.callout_widgets["btn_middle"]["title_lbl"].set_label(_("Shift wheel mode"))
             elif not self.config.btn_middle_keys or self.config.btn_middle_action == "default":
-                self.callout_widgets["btn_middle"]["title_lbl"].set_label("Middle button")
+                self.callout_widgets["btn_middle"]["title_lbl"].set_label(_("Middle button"))
             elif self.config.btn_middle_keys == ["KEY_LEFTMETA"]:
-                self.callout_widgets["btn_middle"]["title_lbl"].set_label("Task view")
+                self.callout_widgets["btn_middle"]["title_lbl"].set_label(_("Task view"))
             elif self.config.btn_middle_keys == ["KEY_LEFTMETA", "KEY_D"]:
-                self.callout_widgets["btn_middle"]["title_lbl"].set_label("Show/hide desktop")
+                self.callout_widgets["btn_middle"]["title_lbl"].set_label(_("Show/hide desktop"))
             else:
                 self.callout_widgets["btn_middle"]["title_lbl"].set_label(format_keys_display(self.config.btn_middle_keys))
-            self.callout_widgets["btn_middle"]["sub_lbl"].set_label("Wheel button")
+            self.callout_widgets["btn_middle"]["sub_lbl"].set_label(_("Wheel button"))
 
         # Top Button
         if "btn_top" in self.callout_widgets:
             if self.config.btn_top_action == "ToggleSmartShift" or not self.config.btn_top_keys:
-                self.callout_widgets["btn_top"]["title_lbl"].set_label("Shift wheel mode")
+                self.callout_widgets["btn_top"]["title_lbl"].set_label(_("Shift wheel mode"))
             elif self.config.btn_top_keys == ["KEY_LEFTMETA"]:
-                self.callout_widgets["btn_top"]["title_lbl"].set_label("Task view")
+                self.callout_widgets["btn_top"]["title_lbl"].set_label(_("Task view"))
             elif self.config.btn_top_keys == ["KEY_PRINT"]:
-                self.callout_widgets["btn_top"]["title_lbl"].set_label("Print screen")
+                self.callout_widgets["btn_top"]["title_lbl"].set_label(_("Print screen"))
             else:
                 self.callout_widgets["btn_top"]["title_lbl"].set_label(format_keys_display(self.config.btn_top_keys))
-            self.callout_widgets["btn_top"]["sub_lbl"].set_label("Top button")
+            self.callout_widgets["btn_top"]["sub_lbl"].set_label(_("Top button"))
 
         # Thumbwheel
         if "thumbwheel" in self.callout_widgets:
             if not self.config.thumbwheel_divert:
-                self.callout_widgets["thumbwheel"]["title_lbl"].set_label("Horizontal scroll")
-                self.callout_widgets["thumbwheel"]["sub_lbl"].set_label("Thumb wheel")
+                self.callout_widgets["thumbwheel"]["title_lbl"].set_label(_("Horizontal scroll"))
+                self.callout_widgets["thumbwheel"]["sub_lbl"].set_label(_("Thumb wheel"))
             elif self.config.thumbwheel_right_keys == ["KEY_LEFTCTRL", "KEY_PAGEDOWN"]:
-                self.callout_widgets["thumbwheel"]["title_lbl"].set_label("Navigate between tabs")
-                self.callout_widgets["thumbwheel"]["sub_lbl"].set_label("Thumb wheel")
+                self.callout_widgets["thumbwheel"]["title_lbl"].set_label(_("Navigate between tabs"))
+                self.callout_widgets["thumbwheel"]["sub_lbl"].set_label(_("Thumb wheel"))
             elif self.config.thumbwheel_right_keys == ["KEY_VOLUMEUP"]:
-                self.callout_widgets["thumbwheel"]["title_lbl"].set_label("Volume up/down")
-                self.callout_widgets["thumbwheel"]["sub_lbl"].set_label("Thumb wheel")
+                self.callout_widgets["thumbwheel"]["title_lbl"].set_label(_("Volume up/down"))
+                self.callout_widgets["thumbwheel"]["sub_lbl"].set_label(_("Thumb wheel"))
             elif self.config.thumbwheel_right_keys == ["KEY_LEFTCTRL", "KEY_EQUAL"]:
-                self.callout_widgets["thumbwheel"]["title_lbl"].set_label("Zoom in/out")
-                self.callout_widgets["thumbwheel"]["sub_lbl"].set_label("Thumb wheel")
+                self.callout_widgets["thumbwheel"]["title_lbl"].set_label(_("Zoom in/out"))
+                self.callout_widgets["thumbwheel"]["sub_lbl"].set_label(_("Thumb wheel"))
             else:
-                left_str = format_keys_display(self.config.thumbwheel_left_keys) if self.config.thumbwheel_left_keys else "None"
-                right_str = format_keys_display(self.config.thumbwheel_right_keys) if self.config.thumbwheel_right_keys else "None"
-                self.callout_widgets["thumbwheel"]["title_lbl"].set_label("Keyboard shortcut")
-                self.callout_widgets["thumbwheel"]["sub_lbl"].set_label(f"{left_str}, {right_str}\nThumb wheel up, Thumb wheel down")
+                left_str = format_keys_display(self.config.thumbwheel_left_keys) if self.config.thumbwheel_left_keys else _("None")
+                right_str = format_keys_display(self.config.thumbwheel_right_keys) if self.config.thumbwheel_right_keys else _("None")
+                self.callout_widgets["thumbwheel"]["title_lbl"].set_label(_("Keyboard shortcut"))
+                self.callout_widgets["thumbwheel"]["sub_lbl"].set_label(f"{left_str}, {right_str}\n{_('Thumb wheel up')}, {_('Thumb wheel down')}")
 
         # Forward
         if "btn_forward" in self.callout_widgets:
             if self.config.btn_forward_keys == ["KEY_FORWARD"]:
-                self.callout_widgets["btn_forward"]["title_lbl"].set_label("Forward")
+                self.callout_widgets["btn_forward"]["title_lbl"].set_label(_("Forward"))
             elif self.config.btn_forward_keys == ["KEY_LEFTCTRL", "KEY_V"]:
-                self.callout_widgets["btn_forward"]["title_lbl"].set_label("Paste")
+                self.callout_widgets["btn_forward"]["title_lbl"].set_label(_("Paste"))
             elif self.config.btn_forward_keys == ["KEY_VOLUMEUP"]:
-                self.callout_widgets["btn_forward"]["title_lbl"].set_label("Volume up")
+                self.callout_widgets["btn_forward"]["title_lbl"].set_label(_("Volume up"))
             elif self.config.btn_forward_keys == ["KEY_LEFTCTRL", "KEY_Y"]:
-                self.callout_widgets["btn_forward"]["title_lbl"].set_label("Redo")
+                self.callout_widgets["btn_forward"]["title_lbl"].set_label(_("Redo"))
             else:
                 self.callout_widgets["btn_forward"]["title_lbl"].set_label(format_keys_display(self.config.btn_forward_keys))
-            self.callout_widgets["btn_forward"]["sub_lbl"].set_label("Forward button")
+            self.callout_widgets["btn_forward"]["sub_lbl"].set_label(_("Forward button"))
 
         # Back
         if "btn_back" in self.callout_widgets:
             if self.config.btn_back_keys == ["KEY_BACK"]:
-                self.callout_widgets["btn_back"]["title_lbl"].set_label("Back")
+                self.callout_widgets["btn_back"]["title_lbl"].set_label(_("Back"))
             elif self.config.btn_back_keys == ["KEY_LEFTCTRL", "KEY_C"]:
-                self.callout_widgets["btn_back"]["title_lbl"].set_label("Copy")
+                self.callout_widgets["btn_back"]["title_lbl"].set_label(_("Copy"))
             elif self.config.btn_back_keys == ["KEY_VOLUMEDOWN"]:
-                self.callout_widgets["btn_back"]["title_lbl"].set_label("Volume down")
+                self.callout_widgets["btn_back"]["title_lbl"].set_label(_("Volume down"))
             elif self.config.btn_back_keys == ["KEY_LEFTCTRL", "KEY_Z"]:
-                self.callout_widgets["btn_back"]["title_lbl"].set_label("Undo")
+                self.callout_widgets["btn_back"]["title_lbl"].set_label(_("Undo"))
             else:
                 self.callout_widgets["btn_back"]["title_lbl"].set_label(format_keys_display(self.config.btn_back_keys))
-            self.callout_widgets["btn_back"]["sub_lbl"].set_label("Back button")
+            self.callout_widgets["btn_back"]["sub_lbl"].set_label(_("Back button"))
 
         # Gesture
         if "btn_gesture" in self.callout_widgets:
             if self.config.gesture_mode == "keypress":
-                self.callout_widgets["btn_gesture"]["title_lbl"].set_label("Keyboard shortcut")
-                self.callout_widgets["btn_gesture"]["sub_lbl"].set_label(f"{format_keys_display(self.config.gesture_single_keys)}\nThumb button")
+                self.callout_widgets["btn_gesture"]["title_lbl"].set_label(_("Keyboard shortcut"))
+                self.callout_widgets["btn_gesture"]["sub_lbl"].set_label(f"{format_keys_display(self.config.gesture_single_keys)}\n{_('Thumb button')}")
             else:
-                preset_name = "Virtual desktops"
+                preset_name = _("Virtual desktops")
                 if self.config.gesture_up_keys == ["KEY_VOLUMEUP"]:
-                    preset_name = "Media controls"
+                    preset_name = _("Media controls")
                 elif self.config.gesture_left_keys == ["KEY_LEFTMETA", "KEY_LEFT"]:
-                    preset_name = "Windows management"
+                    preset_name = _("Windows management")
                 elif self.config.gesture_left_keys == ["KEY_LEFTALT", "KEY_LEFTSHIFT", "KEY_TAB"]:
-                    preset_name = "App navigation"
+                    preset_name = _("App navigation")
                 elif self.config.gesture_up_keys == ["KEY_UP"]:
-                    preset_name = "Pan"
+                    preset_name = _("Pan")
                 
-                self.callout_widgets["btn_gesture"]["title_lbl"].set_label("Gestures")
-                self.callout_widgets["btn_gesture"]["sub_lbl"].set_label(f"{preset_name}\nThumb button")
+                self.callout_widgets["btn_gesture"]["title_lbl"].set_label(_("Gestures"))
+                self.callout_widgets["btn_gesture"]["sub_lbl"].set_label(f"{preset_name}\n{_('Thumb button')}")
 
     def create_pin_callback(self, pin_id):
         def cb(button):

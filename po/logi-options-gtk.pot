@@ -1,0 +1,788 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-15 13:35-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: app/window.py:24
+msgid "Logi Options+ (MX Master 3S)"
+msgstr ""
+
+#: app/window.py:55
+msgid "BUTTONS"
+msgstr ""
+
+#: app/window.py:56
+msgid "POINT AND SCROLL"
+msgstr ""
+
+#: app/window.py:57
+msgid "SETTINGS"
+msgstr ""
+
+#: app/window.py:130 app/window.py:313
+msgid "Apply to System"
+msgstr ""
+
+#: app/window.py:138
+msgid "Close Logi Options+"
+msgstr ""
+
+#: app/window.py:176
+msgid "Global Settings (Active)"
+msgstr ""
+
+#: app/window.py:180
+msgid "Switch to Global Settings"
+msgstr ""
+
+#: app/window.py:210
+#, python-brace-format
+msgid "Profile for: {name}"
+msgstr ""
+
+#: app/window.py:215
+msgid "+ ADD APPLICATION"
+msgstr ""
+
+#: app/window.py:217
+msgid "Add profile for installed application"
+msgstr ""
+
+#: app/window.py:232
+#, python-brace-format
+msgid "📌 Active profile: {name}"
+msgstr ""
+
+#: app/window.py:256
+#, python-brace-format
+msgid "✅ {count} application(s) added successfully!"
+msgstr ""
+
+#: app/window.py:307
+msgid "Applying..."
+msgstr ""
+
+#: app/window.py:316
+msgid "✅ Settings applied successfully to logid!"
+msgstr ""
+
+#: app/window.py:320
+msgid "Cancelled"
+msgstr ""
+
+#: app/window.py:321
+#, python-brace-format
+msgid "⚠️ Error applying: {error}"
+msgstr ""
+
+#: app/window.py:342
+#, python-brace-format
+msgid ""
+"Battery: {pct} • State: {st}\n"
+"Click to re-scan devices"
+msgstr ""
+
+#: app/window.py:346
+#, python-brace-format
+msgid "✅ Mouse detected ({pct})"
+msgstr ""
+
+#: app/window.py:350
+msgid "Disconnected 🔴"
+msgstr ""
+
+#: app/window.py:353
+msgid ""
+"Mouse disconnected\n"
+"Click to re-scan devices"
+msgstr ""
+
+#: app/window.py:355
+msgid "⚠️ Mouse not found. Please check connection."
+msgstr ""
+
+#: app/views/buttons_view.py:24
+msgid "Action center"
+msgstr ""
+
+#: app/views/buttons_view.py:25 app/views/buttons_view.py:318
+#: app/widgets/mouse_canvas.py:103 app/widgets/mouse_canvas.py:248
+msgid "Back"
+msgstr ""
+
+#: app/views/buttons_view.py:26
+msgid "Brightness down"
+msgstr ""
+
+#: app/views/buttons_view.py:27
+msgid "Brightness up"
+msgstr ""
+
+#: app/views/buttons_view.py:28
+msgid "Calculator"
+msgstr ""
+
+#: app/views/buttons_view.py:29
+msgid "Close window"
+msgstr ""
+
+#: app/views/buttons_view.py:30 app/views/buttons_view.py:319
+#: app/widgets/mouse_canvas.py:250
+msgid "Copy"
+msgstr ""
+
+#: app/views/buttons_view.py:31
+msgid "Cut"
+msgstr ""
+
+#: app/views/buttons_view.py:32 app/views/buttons_view.py:73
+msgid "Desktop left"
+msgstr ""
+
+#: app/views/buttons_view.py:33 app/views/buttons_view.py:74
+msgid "Desktop right"
+msgstr ""
+
+#: app/views/buttons_view.py:34 app/views/buttons_view.py:157
+#: app/views/buttons_view.py:158 app/views/buttons_view.py:159
+#: app/views/buttons_view.py:160 app/views/buttons_view.py:161
+msgid "Do nothing"
+msgstr ""
+
+#: app/views/buttons_view.py:35
+msgid "Emoji menu"
+msgstr ""
+
+#: app/views/buttons_view.py:36 app/views/buttons_view.py:310
+#: app/widgets/mouse_canvas.py:97 app/widgets/mouse_canvas.py:234
+msgid "Forward"
+msgstr ""
+
+#: app/views/buttons_view.py:37
+msgid "Input language"
+msgstr ""
+
+#: app/views/buttons_view.py:38
+msgid "Lock"
+msgstr ""
+
+#: app/views/buttons_view.py:39 app/views/buttons_view.py:103
+#: app/views/buttons_view.py:145
+msgid "Maximize window"
+msgstr ""
+
+#: app/views/buttons_view.py:40 app/views/buttons_view.py:146
+msgid "Minimize window"
+msgstr ""
+
+#: app/views/buttons_view.py:41
+msgid "Mute/Unmute speaker"
+msgstr ""
+
+#: app/views/buttons_view.py:42
+msgid "New browser tab"
+msgstr ""
+
+#: app/views/buttons_view.py:43 app/views/buttons_view.py:88
+msgid "Next"
+msgstr ""
+
+#: app/views/buttons_view.py:44 app/views/buttons_view.py:311
+#: app/widgets/mouse_canvas.py:236
+msgid "Paste"
+msgstr ""
+
+#: app/views/buttons_view.py:45 app/views/buttons_view.py:91
+msgid "Play/Pause"
+msgstr ""
+
+#: app/views/buttons_view.py:46 app/views/buttons_view.py:87
+msgid "Previous"
+msgstr ""
+
+#: app/views/buttons_view.py:47 app/views/buttons_view.py:305
+#: app/views/buttons_view.py:330 app/widgets/mouse_canvas.py:206
+msgid "Print screen"
+msgstr ""
+
+#: app/views/buttons_view.py:48 app/views/buttons_view.py:313
+#: app/widgets/mouse_canvas.py:240
+msgid "Redo"
+msgstr ""
+
+#: app/views/buttons_view.py:49
+msgid "Right Ctrl"
+msgstr ""
+
+#: app/views/buttons_view.py:50 app/views/buttons_view.py:304
+#: app/views/buttons_view.py:329
+msgid "Screen capture"
+msgstr ""
+
+#: app/views/buttons_view.py:51
+msgid "Screen snip"
+msgstr ""
+
+#: app/views/buttons_view.py:52 app/views/buttons_view.py:292
+#: app/views/buttons_view.py:300 app/widgets/mouse_canvas.py:85
+#: app/widgets/mouse_canvas.py:188 app/widgets/mouse_canvas.py:202
+msgid "Shift wheel mode"
+msgstr ""
+
+#: app/views/buttons_view.py:53 app/views/buttons_view.py:76
+#: app/views/buttons_view.py:104 app/views/buttons_view.py:118
+#: app/views/buttons_view.py:294 app/views/buttons_view.py:328
+#: app/widgets/mouse_canvas.py:194
+msgid "Show/hide desktop"
+msgstr ""
+
+#: app/views/buttons_view.py:54 app/views/buttons_view.py:105
+#: app/views/buttons_view.py:115 app/views/buttons_view.py:116
+#: app/views/buttons_view.py:119 app/views/buttons_view.py:147
+#: app/views/buttons_view.py:331
+msgid "Switch application"
+msgstr ""
+
+#: app/views/buttons_view.py:55 app/views/buttons_view.py:77
+#: app/views/buttons_view.py:293 app/views/buttons_view.py:301
+#: app/views/buttons_view.py:327 app/widgets/mouse_canvas.py:192
+#: app/widgets/mouse_canvas.py:204
+msgid "Task view"
+msgstr ""
+
+#: app/views/buttons_view.py:56 app/views/buttons_view.py:321
+#: app/widgets/mouse_canvas.py:254
+msgid "Undo"
+msgstr ""
+
+#: app/views/buttons_view.py:57 app/views/buttons_view.py:90
+#: app/views/buttons_view.py:320 app/widgets/mouse_canvas.py:252
+msgid "Volume down"
+msgstr ""
+
+#: app/views/buttons_view.py:58 app/views/buttons_view.py:89
+#: app/views/buttons_view.py:312 app/widgets/mouse_canvas.py:238
+msgid "Volume up"
+msgstr ""
+
+#: app/views/buttons_view.py:59
+msgid "Zoom in"
+msgstr ""
+
+#: app/views/buttons_view.py:60
+msgid "Zoom out"
+msgstr ""
+
+#: app/views/buttons_view.py:67 app/widgets/mouse_canvas.py:110
+#: app/widgets/mouse_canvas.py:265
+msgid "Virtual desktops"
+msgstr ""
+
+#: app/views/buttons_view.py:73 app/views/buttons_view.py:87
+#: app/views/buttons_view.py:101 app/views/buttons_view.py:115
+#: app/views/buttons_view.py:129 app/views/buttons_view.py:143
+#: app/views/buttons_view.py:157
+msgid "← HOLD + MOVE LEFT"
+msgstr ""
+
+#: app/views/buttons_view.py:74 app/views/buttons_view.py:88
+#: app/views/buttons_view.py:102 app/views/buttons_view.py:116
+#: app/views/buttons_view.py:130 app/views/buttons_view.py:144
+#: app/views/buttons_view.py:158
+msgid "→ HOLD + MOVE RIGHT"
+msgstr ""
+
+#: app/views/buttons_view.py:75 app/views/buttons_view.py:89
+#: app/views/buttons_view.py:103 app/views/buttons_view.py:117
+#: app/views/buttons_view.py:131 app/views/buttons_view.py:145
+#: app/views/buttons_view.py:159
+msgid "↑ HOLD + MOVE UP"
+msgstr ""
+
+#: app/views/buttons_view.py:75 app/views/buttons_view.py:117
+msgid "Start menu"
+msgstr ""
+
+#: app/views/buttons_view.py:76 app/views/buttons_view.py:90
+#: app/views/buttons_view.py:104 app/views/buttons_view.py:118
+#: app/views/buttons_view.py:132 app/views/buttons_view.py:146
+#: app/views/buttons_view.py:160
+msgid "↓ HOLD + MOVE DOWN"
+msgstr ""
+
+#: app/views/buttons_view.py:77 app/views/buttons_view.py:91
+#: app/views/buttons_view.py:105 app/views/buttons_view.py:119
+#: app/views/buttons_view.py:133 app/views/buttons_view.py:147
+#: app/views/buttons_view.py:161
+msgid "○ CLICK"
+msgstr ""
+
+#: app/views/buttons_view.py:81 app/widgets/mouse_canvas.py:267
+msgid "Media controls"
+msgstr ""
+
+#: app/views/buttons_view.py:95 app/widgets/mouse_canvas.py:269
+msgid "Windows management"
+msgstr ""
+
+#: app/views/buttons_view.py:101 app/views/buttons_view.py:143
+msgid "Snap left"
+msgstr ""
+
+#: app/views/buttons_view.py:102 app/views/buttons_view.py:144
+msgid "Snap right"
+msgstr ""
+
+#: app/views/buttons_view.py:109 app/widgets/mouse_canvas.py:271
+msgid "App navigation"
+msgstr ""
+
+#: app/views/buttons_view.py:123 app/widgets/mouse_canvas.py:273
+msgid "Pan"
+msgstr ""
+
+#: app/views/buttons_view.py:129
+msgid "Pan left"
+msgstr ""
+
+#: app/views/buttons_view.py:130
+msgid "Pan right"
+msgstr ""
+
+#: app/views/buttons_view.py:131
+msgid "Pan up"
+msgstr ""
+
+#: app/views/buttons_view.py:132
+msgid "Pan down"
+msgstr ""
+
+#: app/views/buttons_view.py:133 app/views/buttons_view.py:291
+#: app/views/buttons_view.py:302 app/widgets/mouse_canvas.py:79
+#: app/widgets/mouse_canvas.py:190
+msgid "Middle button"
+msgstr ""
+
+#: app/views/buttons_view.py:137
+msgid "Arrange windows"
+msgstr ""
+
+#: app/views/buttons_view.py:151
+msgid "Custom"
+msgstr ""
+
+#: app/views/buttons_view.py:197
+msgid "Actions"
+msgstr ""
+
+#: app/views/buttons_view.py:208 app/views/point_scroll_view.py:50
+msgid "Close and return to overview"
+msgstr ""
+
+#: app/views/buttons_view.py:216
+msgid "Search"
+msgstr ""
+
+#: app/views/buttons_view.py:274
+msgid "RECOMMENDED"
+msgstr ""
+
+#: app/views/buttons_view.py:283 app/widgets/mouse_canvas.py:91
+#: app/widgets/mouse_canvas.py:214
+msgid "Horizontal scroll"
+msgstr ""
+
+#: app/views/buttons_view.py:284 app/widgets/mouse_canvas.py:223
+msgid "Zoom in/out"
+msgstr ""
+
+#: app/views/buttons_view.py:285 app/widgets/mouse_canvas.py:220
+msgid "Volume up/down"
+msgstr ""
+
+#: app/views/buttons_view.py:286 app/widgets/mouse_canvas.py:217
+msgid "Navigate between tabs"
+msgstr ""
+
+#: app/views/buttons_view.py:287 app/views/buttons_view.py:296
+#: app/views/buttons_view.py:306 app/views/buttons_view.py:314
+#: app/views/buttons_view.py:322 app/views/buttons_view.py:332
+#: app/widgets/mouse_canvas.py:228 app/widgets/mouse_canvas.py:262
+msgid "Keyboard shortcut"
+msgstr ""
+
+#: app/views/buttons_view.py:295 app/views/buttons_view.py:303
+#: app/views/buttons_view.py:326 app/widgets/mouse_canvas.py:109
+#: app/widgets/mouse_canvas.py:275
+msgid "Gestures"
+msgstr ""
+
+#: app/views/buttons_view.py:347
+msgid "OTHER ACTIONS"
+msgstr ""
+
+#: app/views/buttons_view.py:450 app/views/buttons_view.py:508
+msgid ""
+"Press key combination to assign shortcut\n"
+"(Eg. 'Ctrl + C' for Copy)"
+msgstr ""
+
+#: app/views/buttons_view.py:457
+msgid "SCROLL UP"
+msgstr ""
+
+#: app/views/buttons_view.py:466 app/views/buttons_view.py:489
+#: app/views/buttons_view.py:524 app/widgets/shortcut_recorder.py:69
+msgid "Press key combination"
+msgstr ""
+
+#: app/views/buttons_view.py:474 app/views/buttons_view.py:497
+#: app/views/buttons_view.py:532
+msgid "⌨️ Type shortcut on keyboard..."
+msgstr ""
+
+#: app/views/buttons_view.py:480
+msgid "SCROLL DOWN"
+msgstr ""
+
+#: app/views/buttons_view.py:514
+msgid "SHORTCUT"
+msgstr ""
+
+#: app/views/buttons_view.py:547
+msgid "Choose a preset or select custom to create your own."
+msgstr ""
+
+#: app/views/gestures_view.py:25
+msgid "🖐️ Thumb Gesture Compass (0xC3)"
+msgstr ""
+
+#: app/views/gestures_view.py:26
+msgid ""
+"Hold down the thumb button and move the mouse in any direction to trigger "
+"the shortcut."
+msgstr ""
+
+#: app/views/gestures_view.py:42
+msgid "🎯 Selected Direction Action"
+msgstr ""
+
+#: app/views/gestures_view.py:43
+msgid ""
+"Customize the shortcut triggered when moving the mouse in the direction "
+"chosen above"
+msgstr ""
+
+#: app/views/gestures_view.py:47 app/views/gestures_view.py:134
+msgid "⬆️ Swipe UP"
+msgstr ""
+
+#: app/views/gestures_view.py:48
+msgid "Current Shortcut: Super"
+msgstr ""
+
+#: app/views/gestures_view.py:50
+msgid "⌨️ Record Keys..."
+msgstr ""
+
+#: app/views/gestures_view.py:60
+msgid "⚡ Quick Presets"
+msgstr ""
+
+#: app/views/gestures_view.py:61
+msgid "Ready-made 4-direction schemes to apply instantly"
+msgstr ""
+
+#: app/views/gestures_view.py:66
+msgid "🖥️ GNOME Productivity"
+msgstr ""
+
+#: app/views/gestures_view.py:67
+msgid "Up/Down: Overview | Left/Right: Workspaces"
+msgstr ""
+
+#: app/views/gestures_view.py:69 app/views/gestures_view.py:81
+#: app/views/gestures_view.py:93
+msgid "Apply Preset"
+msgstr ""
+
+#: app/views/gestures_view.py:78
+msgid "🎵 Media Controls"
+msgstr ""
+
+#: app/views/gestures_view.py:79
+msgid "Up/Down: Volume +/- | Left/Right: Prev/Next Track"
+msgstr ""
+
+#: app/views/gestures_view.py:90
+msgid "🪟 Window Snapping"
+msgstr ""
+
+#: app/views/gestures_view.py:91
+msgid "Up: Maximize | Down: Restore | Left/Right: Split Screen"
+msgstr ""
+
+#: app/views/gestures_view.py:135
+msgid "⬇️ Swipe DOWN"
+msgstr ""
+
+#: app/views/gestures_view.py:136
+msgid "⬅️ Swipe LEFT"
+msgstr ""
+
+#: app/views/gestures_view.py:137
+msgid "➡️ Swipe RIGHT"
+msgstr ""
+
+#: app/views/gestures_view.py:143
+#, python-brace-format
+msgid "Current Shortcut: {keys}"
+msgstr ""
+
+#: app/views/point_scroll_view.py:39 app/views/point_scroll_view.py:100
+#: app/widgets/mouse_canvas.py:58 app/widgets/mouse_canvas.py:159
+msgid "Scroll wheel"
+msgstr ""
+
+#: app/views/point_scroll_view.py:104 app/widgets/mouse_canvas.py:59
+#: app/widgets/mouse_canvas.py:65 app/widgets/mouse_canvas.py:161
+#: app/widgets/mouse_canvas.py:171
+msgid "Scroll direction"
+msgstr ""
+
+#: app/views/point_scroll_view.py:116 app/views/point_scroll_view.py:292
+#: app/widgets/mouse_canvas.py:156 app/widgets/mouse_canvas.py:166
+msgid "Inverted"
+msgstr ""
+
+#: app/views/point_scroll_view.py:128 app/widgets/mouse_canvas.py:59
+#: app/widgets/mouse_canvas.py:156
+msgid "Standard"
+msgstr ""
+
+#: app/views/point_scroll_view.py:138 app/widgets/mouse_canvas.py:59
+#: app/widgets/mouse_canvas.py:161
+msgid "Smooth scrolling"
+msgstr ""
+
+#: app/views/point_scroll_view.py:153
+msgid ""
+"With smooth scrolling, web pages glide across your screen smoothly making it "
+"easy to read and navigate them."
+msgstr ""
+
+#: app/views/point_scroll_view.py:163
+msgid "SmartShift"
+msgstr ""
+
+#: app/views/point_scroll_view.py:178
+msgid ""
+"Automatically switches the scroll wheel from line-by-line scrolling to hyper-"
+"fast scrolling when you scroll faster."
+msgstr ""
+
+#: app/views/point_scroll_view.py:189
+msgid "SENSITIVITY VALUE"
+msgstr ""
+
+#: app/views/point_scroll_view.py:221
+msgid "Ratchet (Line-by-line scroll)"
+msgstr ""
+
+#: app/views/point_scroll_view.py:229
+msgid "Free spin (Hyper-fast)"
+msgstr ""
+
+#: app/views/point_scroll_view.py:238 app/widgets/mouse_canvas.py:64
+#: app/widgets/mouse_canvas.py:92 app/widgets/mouse_canvas.py:169
+#: app/widgets/mouse_canvas.py:215 app/widgets/mouse_canvas.py:218
+#: app/widgets/mouse_canvas.py:221 app/widgets/mouse_canvas.py:224
+msgid "Thumb wheel"
+msgstr ""
+
+#: app/views/point_scroll_view.py:243
+msgid "Thumb wheel speed"
+msgstr ""
+
+#: app/views/point_scroll_view.py:268
+msgid "Thumb wheel direction"
+msgstr ""
+
+#: app/views/point_scroll_view.py:280 app/widgets/mouse_canvas.py:65
+#: app/widgets/mouse_canvas.py:166
+msgid "Default"
+msgstr ""
+
+#: app/views/point_scroll_view.py:301 app/views/point_scroll_view.py:330
+#: app/widgets/mouse_canvas.py:70 app/widgets/mouse_canvas.py:178
+msgid "Pointer speed"
+msgstr ""
+
+#: app/views/point_scroll_view.py:304
+msgid ""
+"Work faster and more precisely with an 8K DPI sensor, allowing to adjust "
+"pointer speed and precision to match high resolution monitors."
+msgstr ""
+
+#: app/views/point_scroll_view.py:312
+msgid "Extend sensor range to 8K DPI"
+msgstr ""
+
+#: app/views/settings_view.py:40
+msgid "SYSTEM & DRIVER"
+msgstr ""
+
+#: app/views/settings_view.py:55
+msgid "Daemon logid.service"
+msgstr ""
+
+#: app/views/settings_view.py:60
+msgid "Active (Running)"
+msgstr ""
+
+#: app/views/settings_view.py:60
+msgid "Inactive / Stopped"
+msgstr ""
+
+#: app/views/settings_view.py:76
+msgid "DEVICE & POWER"
+msgstr ""
+
+#: app/views/settings_view.py:95
+msgid "Connected"
+msgstr ""
+
+#: app/views/settings_view.py:96
+msgid "Battery"
+msgstr ""
+
+#: app/views/settings_view.py:96
+msgid "Status"
+msgstr ""
+
+#: app/views/settings_view.py:107
+msgid "CONFIGURATION"
+msgstr ""
+
+#: app/views/settings_view.py:113
+msgid "Restore to Default"
+msgstr ""
+
+#: app/views/settings_view.py:118
+msgid ""
+"Restore user device settings and key mappings to their default factory "
+"values."
+msgstr ""
+
+#: app/views/settings_view.py:123
+msgid "RESET TO DEFAULT SETTINGS"
+msgstr ""
+
+#: app/views/settings_view.py:133
+msgid "ABOUT"
+msgstr ""
+
+#: app/views/settings_view.py:144
+msgid ""
+"Native GTK4 / Libadwaita frontend for Logitech MX Master 3S and logiops "
+"daemon."
+msgstr ""
+
+#: app/widgets/add_app_dialog.py:18 app/widgets/add_app_dialog.py:28
+msgid "Select Applications"
+msgstr ""
+
+#: app/widgets/add_app_dialog.py:33
+msgid ""
+"Customize the buttons for your favorite applications to be even more "
+"efficient."
+msgstr ""
+
+#: app/widgets/add_app_dialog.py:42
+msgid "Search applications..."
+msgstr ""
+
+#: app/widgets/add_app_dialog.py:66
+msgid "CONFIRM"
+msgstr ""
+
+#: app/widgets/add_app_dialog.py:71
+msgid "DISCARD"
+msgstr ""
+
+#: app/widgets/add_app_dialog.py:85
+msgid "INSTALLED APPLICATIONS"
+msgstr ""
+
+#: app/widgets/mouse_canvas.py:65 app/widgets/mouse_canvas.py:71
+#: app/widgets/mouse_canvas.py:171 app/widgets/mouse_canvas.py:180
+msgid "Speed"
+msgstr ""
+
+#: app/widgets/mouse_canvas.py:80 app/widgets/mouse_canvas.py:197
+msgid "Wheel button"
+msgstr ""
+
+#: app/widgets/mouse_canvas.py:86 app/widgets/mouse_canvas.py:209
+msgid "Top button"
+msgstr ""
+
+#: app/widgets/mouse_canvas.py:98 app/widgets/mouse_canvas.py:243
+msgid "Forward button"
+msgstr ""
+
+#: app/widgets/mouse_canvas.py:104 app/widgets/mouse_canvas.py:257
+msgid "Back button"
+msgstr ""
+
+#: app/widgets/mouse_canvas.py:110 app/widgets/mouse_canvas.py:263
+#: app/widgets/mouse_canvas.py:276
+msgid "Thumb button"
+msgstr ""
+
+#: app/widgets/mouse_canvas.py:226 app/widgets/mouse_canvas.py:227
+#: app/widgets/shortcut_recorder.py:150
+msgid "None"
+msgstr ""
+
+#: app/widgets/mouse_canvas.py:229
+msgid "Thumb wheel up"
+msgstr ""
+
+#: app/widgets/mouse_canvas.py:229
+msgid "Thumb wheel down"
+msgstr ""
+
+#: app/widgets/shortcut_recorder.py:56
+msgid "Record Keyboard Shortcut"
+msgstr ""
+
+#: app/widgets/shortcut_recorder.py:73
+msgid "E.g., Super + Shift + PageDown or Ctrl + Alt + T"
+msgstr ""
+
+#: app/widgets/shortcut_recorder.py:94
+msgid "Clear"
+msgstr ""
+
+#: app/widgets/shortcut_recorder.py:98
+msgid "Cancel"
+msgstr ""
+
+#: app/widgets/shortcut_recorder.py:102
+msgid "Save Shortcut"
+msgstr ""

@@ -8,13 +8,14 @@ gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
 from gi.repository import Gtk, Adw
 
+from ..i18n import _
 from ..backend.app_manager import AppManager
 
 
 class AddAppDialog(Gtk.Window):
     def __init__(self, parent_window, on_apps_selected_cb):
         super().__init__(transient_for=parent_window, modal=True)
-        self.set_title("Select Applications")
+        self.set_title(_("Select Applications"))
         self.set_default_size(520, 680)
         self.on_selected_cb = on_apps_selected_cb
 
@@ -24,12 +25,12 @@ class AddAppDialog(Gtk.Window):
         self.set_child(main_box)
 
         # Cabeçalho
-        title_lbl = Gtk.Label(label="Select Applications")
+        title_lbl = Gtk.Label(label=_("Select Applications"))
         title_lbl.add_css_class("drawer-title")
         title_lbl.set_halign(Gtk.Align.START)
         main_box.append(title_lbl)
 
-        sub_lbl = Gtk.Label(label="Customize the buttons for your favorite applications to be even more efficient.")
+        sub_lbl = Gtk.Label(label=_("Customize the buttons for your favorite applications to be even more efficient."))
         sub_lbl.add_css_class("callout-sub")
         sub_lbl.set_wrap(True)
         sub_lbl.set_halign(Gtk.Align.START)
@@ -38,7 +39,7 @@ class AddAppDialog(Gtk.Window):
         # Campo de Busca
         self.search_entry = Gtk.SearchEntry()
         self.search_entry.add_css_class("official-search-entry")
-        self.search_entry.set_placeholder_text("Search applications...")
+        self.search_entry.set_placeholder_text(_("Search applications..."))
         self.search_entry.connect("search-changed", self.on_search_changed)
         main_box.append(self.search_entry)
 
@@ -62,12 +63,12 @@ class AddAppDialog(Gtk.Window):
         btn_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         btn_box.set_margin_top(8)
 
-        confirm_btn = Gtk.Button(label="CONFIRM")
+        confirm_btn = Gtk.Button(label=_("CONFIRM"))
         confirm_btn.add_css_class("official-apply-btn")
         confirm_btn.connect("clicked", self.on_confirm_clicked)
         btn_box.append(confirm_btn)
 
-        discard_btn = Gtk.Button(label="DISCARD")
+        discard_btn = Gtk.Button(label=_("DISCARD"))
         discard_btn.add_css_class("close-nav-btn")
         discard_btn.connect("clicked", lambda b: self.close())
         btn_box.append(discard_btn)
@@ -81,7 +82,7 @@ class AddAppDialog(Gtk.Window):
         query = filter_text.strip().lower()
 
         # Categoria: Available Applications
-        cat_lbl = Gtk.Label(label="INSTALLED APPLICATIONS")
+        cat_lbl = Gtk.Label(label=_("INSTALLED APPLICATIONS"))
         cat_lbl.add_css_class("category-header-label")
         cat_lbl.set_halign(Gtk.Align.START)
         self.apps_container.append(cat_lbl)
