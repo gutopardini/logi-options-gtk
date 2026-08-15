@@ -13,6 +13,8 @@
 
 </div>
 
+<img width="1379" height="850" alt="image" src="https://github.com/user-attachments/assets/42bd9960-af49-42b8-b8cd-ae2883387125" />
+
 ---
 
 ## 🌟 Visão Geral / Overview
